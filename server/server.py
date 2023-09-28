@@ -2,12 +2,24 @@ import socketserver
 import threading 
 from datetime import datetime
 import json 
+import Crypto.Hash # Used to generate keys and for encryption and decryption
 
 
 # Versioning 
 # Major.Minor.Revision (bug fixes, small updates).build number
 
 
+# Encryption: 
+"""
+    - Client generates an asymmetric keypair. 
+    - Client sends public key with initial authentication request to server 
+    - Server uses the key to encrypt the response and sends back the response to the client
+    - If the client is authenticated the server generates a symmetric key and includes that key in the response to the client.  
+
+    * Both the clients asymmetric key and servers symmetric key are "randomly" generated for each connection. 
+
+    
+"""
 class Client:
     def __init__(self, client_version, profile_hash): # Profile hash can be anything until I develop a hashing method  
         self.client_version = client_version # The client version 
@@ -15,6 +27,9 @@ class Client:
         self.connected = datetime.now()
         self.messages = {}
         self.token = None # Need to implement a token 
+        self.client_key = None # Clients public key 
+        self.private_key = None # The servers private key (or key for this session)
+        self.symmetric_key = None # Once encryption is established the server generates a symmetric key
 
     
     def readMessage(self, message):
@@ -23,6 +38,7 @@ class Client:
         n = message.pop('n')
          
         self.messages[n] = message
+        client = Client("0.0.0.1", self.data)
         return message['content']
     
 
@@ -68,9 +84,10 @@ class Server:
             long_string += user_messages[message]['content'] + "\n" + ">>>  "
         
         return long_string
-            
-        
-            
+    
+    
+     
+    
                 
     
 opencord_server = Server()
