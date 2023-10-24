@@ -1,5 +1,6 @@
 import socketserver
 
+
 # Makes use of streams (file-like objects that simplify communication by providing the standard file interface)
 class MyTCPHandler(socketserver.StreamRequestHandler):
     def handle(self):
@@ -14,8 +15,6 @@ class MyTCPHandler(socketserver.StreamRequestHandler):
         self.wfile.write(self.data.upper())
 
 
-    
-    
 if __name__ == "__main__":
     HOST, PORT = 'localhost', 12345
     print(f"Server listening on: {PORT}")
@@ -23,8 +22,6 @@ if __name__ == "__main__":
     # with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
     server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
 
-        # Activate the server; thi swill keep running until you 
-        # interrupt the program (Ctrl-C)
+    # Activate the server; thi swill keep running until you
+    # interrupt the program (Ctrl-C)
     server.serve_forever()
-
-
