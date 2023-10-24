@@ -91,7 +91,7 @@ class Database:
         for table in tables:
             print(table)
 
-    def checkUser(self, user):
+    def checkUser(self, user) :
         sql = f"""
         SELECT
             CASE
@@ -109,11 +109,11 @@ class Database:
             "SELECT CASE WHEN EXISTS (SELECT 1 FROM user WHERE name =?) THEN 1 ELSE 0 END AS value_exists", [user])
         return response.fetchone()[0]
 
-    def insertUser(self, user):
+    def insertUser(self, user) -> None:
         self.sanitizedQuery("INSERT INTO user (name) VALUES (?)", [user])
 
     # Check if the database exists already and connect. If it doens't exist create the db file. 
-    def connectToDatabase(self) -> None:
+    def connectToDatabase(self) -> sqlite3.Connection:
         exists = os.path.exists(self.location)
         self.con = sqlite3.connect(self.location, check_same_thread=False)
         self.cur = self.con.cursor()
@@ -123,10 +123,10 @@ class Database:
         return self.con
 
     # Load the database
-    def load_database():
+    def load_database(self):
         pass
 
-    def sanitizedQuery(self, command: str, parameters: object = None) -> object:
+    def sanitizedQuery(self, command: str, parameters: list) -> str:
         command = self.cur.execute(command, parameters)
         self.con.commit()
         return command

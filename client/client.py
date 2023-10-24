@@ -35,16 +35,16 @@ class Communication:
         self.update_packet = False  # If it is an update packet or not
         self.sock = None  # Socket connection
 
-        self.check_profile_hash()
+        # self.check_profile_hash()
 
-    def check_profile_hash(self):
-        if self.profile_hash is None:
-            self.profile_hash = hashing_methods.generate_profile_hash(str(uuid.uuid4()))
-            # store in system args persistently
-            sys.argv.append(self.profile_hash)
-
-        else:
-            self.profile_hash = sys.argv[1]
+    # def check_profile_hash(self):
+    #     if self.profile_hash is None:
+    #         self.profile_hash = hashing_methods.generate_profile_hash(str(uuid.uuid4()))
+    #         # store in system args persistently
+    #         sys.argv.append(self.profile_hash)
+    #
+    #     else:
+    #         self.profile_hash = sys.argv[1]
 
     def send(self, content):
         message = {
@@ -60,7 +60,7 @@ class Communication:
     def generateKeys(self):
         key = RSA.generate(2048)
         self.private_key = key.export_key()
-        self.public_key = key.export_key().public_key()
+        self.public_key = key.publickey().export_key()
 
     def decrypt(self, message):
         cipher_rsa = PKCS1_OAEP.new(self.private_key)
@@ -68,8 +68,7 @@ class Communication:
 
     # Begin communication with the server 
     def begin(self):
-        start_object = {"service": 0, "client_version": self.client_version, "profile": self.profile_hash}
-        return start_object
+        return {"service": 0, "client_version": self.client_version, "profile": self.profile_hash}
 
 
 class Data:
