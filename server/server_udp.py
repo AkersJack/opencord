@@ -29,7 +29,7 @@ class Server:
 
     def playStream(self):
         chunk_count = 0
-        while self.buffer != []:
+        while self.buffer is not []:
             print(f"Chunk Count: {chunk_count}")
             chunk = self.buffer.pop(0)
             self.audio_reader.write(chunk)
