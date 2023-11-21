@@ -3,59 +3,83 @@ import wave
 import time
 
 
-
-
-class AudioFile: 
+class AudioFile:
     chunk = 1024
-    
+
     # Init audio stream
-    def __init__(self, file):
+    def __init__(self, file, format=8, channels=2, rate=44100, output=True):
+        self.format = format
+        self.channels = channels
+        self.rate = rate
+        self.output = output
         self.wf = wave.open(file, 'rb')
         self.p = pyaudio.PyAudio()
+        self.stream = self.p.open(
+            format=self.format,
+            channels=self.channels,
+            rate=self.rate,
+            output=self.output
+        )
+
         # self.stream = self.p.open(
-        #     format = self.p.get_format_from_width(self.wf.getsampwidth()), 
-        #     channels = self.wf.getnchannels(), 
-        #     rate = self.wf.getframerate(), 
+        #     format = self.p.get_format_from_width(self.wf.getsampwidth()),
+        #     channels = self.wf.getnchannels(),
+        #     rate = self.wf.getframerate(),
         #     output = True
         #     )
-        self.stream = self.p.open(
-            format = 8, 
-            channels = 2, 
-            rate = 44100, 
-            output = True
-        )
-    
-    def getStream(self):
-        return self.wf 
-    
-    def getReader(self):
+
+    def get_framerate(self) -> int:
+        return self.wf.getframerate()
+
+    def get_nchannels(self) -> int:
+        return self.wf.getnchannels()
+
+    def get_sampwidth(self) -> int:
+        return self.wf.getsampwidth()
+
+    def get_format(self) -> int:
+        return self.format
+
+    def get_channels(self) -> int:
+        return self.channels
+
+    def get_rate(self) -> int:
+        return self.rate
+
+    def get_output(self) -> bool:
+        return self.output
+
+    def get_stream(self) -> pyaudio.Stream:
         return self.stream
 
-    def getObject(self):
+    def get_reader(self) -> wave.Wave_read:
+        return self.wf
+
+    def get_object(self) -> pyaudio.PyAudio:
         return self.p
 
     # Play the entire file
     def play(self):
         # Read data by chunks so 1024 bytes at a time
         data = self.wf.readframes(self.chunk)
-        while data != b'': 
+        while data != b'':
             self.stream.write(data)
             data = self.wf.readframes(self.chunk)
-    
+
     # Shutdown the stream
-    def close(self): 
+    def close(self):
         self.stream.close()
         self.p.terminate()
-        
 
+    def write(self, data):
+        self.stream.write(data)
 
-# if __name__ == '__main__':
-#     a = AudioFile("sample.wav")
-#     a.play()
-#     a.close()
+    # if __name__ == '__main__':
+    #     a = AudioFile("sample.wav")
+    #     a.play()
+    #     a.close()
 
-    
-    """-----------------------------Old Code-----------------------------------"""    
+    """-----------------------------Old Code-----------------------------------"""
     # location = "./sample.wav"
 
     # with wave.open(location, 'rb') as wf:

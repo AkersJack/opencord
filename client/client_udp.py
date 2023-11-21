@@ -1,7 +1,7 @@
-import socket 
+import socket
 import sys
-from datetime import datetime 
-import json 
+from datetime import datetime
+import json
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 from Crypto.Cipher import AES, PKCS1_OAEP
@@ -9,20 +9,26 @@ import threading
 import time
 import os
 import re
-import pyaudio 
+import pyaudio
 import wave
-from audio import AudioFile # custom function 
+from audio import AudioFile  # custom function
 from multiprocessing import Process, Queue
 import ffmpeg
 
 
-class Client: 
+class Client:
     def __init__(self, sock) -> None:
         self.buffer = []
         self.sock = sock
         self.flag = True
+        '''
+        Currently audio_reader is not defined, wasn't sure if you wanted it to be pyaudio related or to reference
+        Your AudioFile class. Actually you reference AudioFile in the play_stream function so I'm assuming you want
+        it to be that.
+        '''
+        self.audio_reader = AudioFile("sample.wav")
 
-    def playStream(self): 
+    def play_stream(self):
         chunk_count = 0
         while self.flag:
             print(f"Chunk Count: {chunk_count}")
@@ -31,41 +37,24 @@ class Client:
             chunk_count += 1
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     # print(audio_stream.readframes(1024))
 
     HOST, PORT = "", 9090
     # data = " ".join(sys.argv[1:])
 
-
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     data = None
     received = None
-    i = 0 
-    
+    i = 0
+
     client = Client(sock)
-    
+
     packet_object = {
         # "c": False, # Critical data/message
-        "n": None, # Packet Number
-        "d": None,   # Packet Data      
+        "n": None,  # Packet Number
+        "d": None,  # Packet Data
     }
-    
-    
 
     while data != "/exit":
         data = input(">>> ")
@@ -77,14 +66,14 @@ if __name__ == "__main__":
             # Used to play audio 
             # audio_thread = threading.Thread(target=client.playStream())
             # audio_thread.daemon = True
-            p = Process(target=client.playStream)
+            p = Process(target=client.play_stream)
             p.daemon = True
 
             a = AudioFile("sample.wav")
-            p = a.getObject()
-            reader = a.getReader()
-            audio_stream = a.getStream()
-            print(f"Format: {p.get_format_from_width(audio_stream.getsampwidth())}")
+            p = a.get_object()
+            reader = a.get_reader()
+            audio_stream = a.get_stream()
+            print(f"Format: {reader.getframerate()}")
             print(f"Channel Count: {audio_stream.getnchannels()}")
             print(f"Rate: {audio_stream.getframerate()}")
             audio_data = audio_stream.readframes(1024)
@@ -122,12 +111,10 @@ if __name__ == "__main__":
                 #     time.sleep(15)
                 # print(sent == data)
 
-
-
-            # sock.sendto(buffer, (HOST, PORT)) 
+            # sock.sendto(buffer, (HOST, PORT))
         else:
             # SOCK_DGRAM is the socket type to user for UDP sockets 
-    
+
             # No connec() call; UDP has no connections. 
             # Data is directly sent to the recipient via sendto(). 
             sock.sendto(bytes(data + "\n", "utf-8"), (HOST, PORT))
