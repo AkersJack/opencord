@@ -130,7 +130,7 @@ class Database:
         return self.con
 
     # Load the database
-    def load_database():
+    def load_database(self):
         pass
 
     def sanitizedQuery(self, command, parameters=None):
