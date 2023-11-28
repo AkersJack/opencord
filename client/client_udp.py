@@ -81,9 +81,9 @@ if __name__ == "__main__":
             p.daemon = True
 
             a = AudioFile("sample.wav")
-            p = a.getObject()
-            reader = a.getReader()
-            audio_stream = a.getStream()
+            p = a.get_object()
+            reader = a.get_reader()
+            audio_stream = a.get_stream()
             print(f"Format: {p.get_format_from_width(audio_stream.getsampwidth())}")
             print(f"Channel Count: {audio_stream.getnchannels()}")
             print(f"Rate: {audio_stream.getframerate()}")

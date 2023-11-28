@@ -46,5 +46,3 @@ def message_hash(message: str, profile_hash: str) -> str:
     timestamp = datetime.now()
     raw_message = f"{message}{profile_hash}{timestamp}"
     return hashlib.sha256(raw_message.encode()).hexdigest()
-
-

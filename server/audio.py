@@ -4,57 +4,52 @@ import time
 import ffmpeg
 
 
-
-
-class AudioFile: 
+class AudioFile:
     chunk = 1024
-    
+
     # Init audio stream
-    def __init__(self, file = None):
+    def __init__(self, file=None):
         self.wf = self.setwf(file)
         self.p = pyaudio.PyAudio()
         self.stream = self.p.open(
-            format = 8, 
-            channels = 2, 
-            rate = 44100, 
-            output = True
-            )
+            format=8,
+            channels=2,
+            rate=44100,
+            output=True
+        )
+
     def setwf(self, file):
-        try: 
+        try:
             self.wf = wave.open(file, 'wb')
-        except Exception as e: 
+        except Exception as e:
             # If no file was passed in this error
             pass
-            
 
-    def getStream(self):
-        return self.wf 
+    def get_stream(self):
+        return self.wf
 
-    def getReader(self):
+    def get_reader(self):
         return self.stream
-    
+
     # Play the entire file
     def play(self):
         # Read data by chunks so 1024 bytes at a time
         data = self.wf.readframes(self.chunk)
-        while data != b'': 
+        while data != b'':
             self.stream.write(data)
             data = self.wf.readframes(self.chunk)
-    
+
     # Shutdown the stream
-    def close(self): 
+    def close(self):
         self.stream.close()
         self.p.terminate()
-        
 
+    # if __name__ == '__main__':
+    #     a = AudioFile("sample.wav")
+    #     a.play()
+    #     a.close()
 
-# if __name__ == '__main__':
-#     a = AudioFile("sample.wav")
-#     a.play()
-#     a.close()
-
-    
-    """-----------------------------Old Code-----------------------------------"""    
+    """-----------------------------Old Code-----------------------------------"""
     # location = "./sample.wav"
 
     # with wave.open(location, 'rb') as wf:

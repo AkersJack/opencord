@@ -3,11 +3,9 @@ import wave
 import time
 
 
-
-
-class AudioFile: 
+class AudioFile:
     chunk = 1024
-    
+
     # Init audio stream
     def __init__(self, file):
         self.wf = wave.open(file, 'rb')
@@ -19,43 +17,40 @@ class AudioFile:
         #     output = True
         #     )
         self.stream = self.p.open(
-            format = 8, 
-            channels = 2, 
-            rate = 44100, 
-            output = True
+            format=8,
+            channels=2,
+            rate=44100,
+            output=True
         )
-    
-    def getStream(self):
-        return self.wf 
-    
-    def getReader(self):
+
+    def get_stream(self):
+        return self.wf
+
+    def get_reader(self):
         return self.stream
 
-    def getObject(self):
+    def get_object(self) -> pyaudio.PyAudio:
         return self.p
 
     # Play the entire file
     def play(self):
         # Read data by chunks so 1024 bytes at a time
         data = self.wf.readframes(self.chunk)
-        while data != b'': 
+        while data != b'':
             self.stream.write(data)
             data = self.wf.readframes(self.chunk)
-    
+
     # Shutdown the stream
-    def close(self): 
+    def close(self):
         self.stream.close()
         self.p.terminate()
-        
 
+    # if __name__ == '__main__':
+    #     a = AudioFile("sample.wav")
+    #     a.play()
+    #     a.close()
 
-# if __name__ == '__main__':
-#     a = AudioFile("sample.wav")
-#     a.play()
-#     a.close()
-
-    
-    """-----------------------------Old Code-----------------------------------"""    
+    """-----------------------------Old Code-----------------------------------"""
     # location = "./sample.wav"
 
     # with wave.open(location, 'rb') as wf:
