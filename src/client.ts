@@ -136,8 +136,8 @@ function startClient() {
 
   // Handle data from the server
   client.on('data', (data) => {
-    // console.log(`Received data from server: ${data}`);
-    console.log(`Received data from server: \n`);
+    console.log(`Received data from server: ${data}`);
+    // console.log(`Received data from server: \n`);
     // const pattern = /\{([^}]+)\}/g;
     const pattern = /^\{.*\}$/;
     const text = data.toString('utf-8');
@@ -146,6 +146,8 @@ function startClient() {
     // console.log("Matches: ", matches);
     // if(matches != null){
     //   console.log("Matches[0]: ", matches);
+    // }else{
+    //   console.log("No matches found");
     // }
 
     if(matches != null){

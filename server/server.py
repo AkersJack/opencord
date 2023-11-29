@@ -100,15 +100,20 @@ class Server:
 
         return long_string
 
-    def build_message(self, content=None, type=0, m_time=None, m_from=None, message_id=None):
+    # 0: normal message, 1: update (update messages), 2:image, 3: info(switch server, add user, etc.),
+    def build_message(self, content=None, m_type=0, m_time=None, m_from=None, message_id=None, message_room=None):
         message = {}
         message["content"] = content
-        message["type"] = type
+        message["type"] = m_type  
         message["time"] = m_time
         message["from"] = m_from
         message["id"] = message_id
+        message["room"] = message_room
 
         return message
+    
+    def build_message_file(self, content=None, m_type=2, m_from=None, file_type=None):
+        message = {}
 
 
 opencord_server = Server()
@@ -119,6 +124,7 @@ def update(timeout=1):
     # message = bytes("Testing update", 'utf-8')
     while True:
         # print(f"active connections: {len(opencord_server.active_connections)}")
+        print(f"Active connections: {opencord_server.active_connections}")
         for i in opencord_server.active_connections:
             for client, connection in i.items():
                 master_string = ""
@@ -128,10 +134,12 @@ def update(timeout=1):
                 # TODO: Merge these into 1 query 
                 room = opencord_server.database.sanitizedQuery("SELECT room FROM user WHERE name =?", [client.phash])
                 room = room.fetchone()
+                print(f"Room: {room}")
 
                 conversation = opencord_server.database.sanitizedQuery("SELECT conv_id FROM user WHERE name =?",
                                                                        [client.phash])
                 conversation = conversation.fetchone()
+                print(f"Conversation: {conversation}")
 
                 # room = opencord_server.database.query(f"SELECT room FROM user WHERE name = '{client.phash}'")
 
@@ -309,7 +317,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
             # self.data = self.request.recv(1024).strip()
             self.data = self.request.recv(1024)
             if not self.data:
-                print("Client Disconnected")
+                print("Client Disconnected (tcpHandler)")
                 logger.info(f"Client Disconnected: {self.client_address}")
                 break
             # print(f"Stripped data: {self.data.strip()}")
@@ -435,7 +443,9 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                 # self.data = self.request.recv(1024).strip()
                 self.data = self.request.recv(1024)
                 if not self.data:
-                    print("Client Disconnected")
+                    print("Client Disconnected (while)")
+                    opencord_server.active_connections.remove(object_identifier)
+
                     logger.warning(f"{client.phash} disconnected.")
                     # opencord_server.save_messages(client.messages, client.phash)
                     break
@@ -796,6 +806,7 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                 try:
                     opencord_server.active_connections.remove(object_identifier)
                 except Exception as c:
+                    # for identifier in opencord_server.active_connections 
                     print(f"Error: {c}")
                     break
                 logger.error(f"Switch Error: {e}")
@@ -875,6 +886,8 @@ if __name__ == '__main__':
                     break
 
             except Exception as e:
+                for x in opencord_server.active_connections:
+                    print(f"X: {x}")
                 print(f"Error Here: {e}")
                 break
         print("Stopping server")
