@@ -6,8 +6,14 @@ import * as path from 'path';
 import { ipcMain, BrowserWindow} from 'electron';
 
 
+
+
+
+
 const dirpath = path.resolve(__dirname, '../..')
 console.log("dirpath: " + dirpath);
+
+
 
 
 function checkProcessType() {
