@@ -102,18 +102,15 @@ class Server:
 
     # 0: normal message, 1: update (update messages), 2:image, 3: info(switch server, add user, etc.),
     def build_message(self, content=None, m_type=0, m_time=None, m_from=None, message_id=None, message_room=None):
-        message = {}
-        message["content"] = content
-        message["type"] = m_type  
-        message["time"] = m_time
-        message["from"] = m_from
-        message["id"] = message_id
-        message["room"] = message_room
+        message = {"content": content, "type": m_type, "time": m_time, "from": m_from, "id": message_id,
+                   "room": message_room}
 
         return message
     
     def build_message_file(self, content=None, m_type=2, m_from=None, file_type=None):
-        message = {}
+        message = {"content": content, "type": m_type, "from": m_from, "file_type": file_type}
+
+        return message
 
 
 opencord_server = Server()

@@ -26,7 +26,10 @@ class Communication:
         self.session_id = None  # ID of the chat session
         self.client_version = ""  # Version of the client
         self.server_version = ""  # Version of the server
-        self.profile_hash = (sys.argv[1])  # Hash of the user profile  (needs to be implemented)
+        if len(sys.argv) > 1:
+            self.profile_hash = (sys.argv[1])  # Hash of the user profile  (needs to be implemented)
+        else:
+            self.profile_hash = "Default_Hash"
         self.authorization = ""  # Pending auth to begin using the service
         self.sessionToken = ""  # Token for the session
         self.messageNumber = 0  # keeps track of the number of messages sent so far
