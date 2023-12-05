@@ -37,6 +37,17 @@ To access the web server pages in browser go to the url:
     http://127.0.0.1:5000
 
 
+# How to test/run locally
+   - Start by running the server.py, leaving it open in a seperate terminal
+      - `$ python3 server.py`
+   - Then run client.py to create a user for yourself.
+      - `$ python3 client.py`
+   - Now we need to open the electron client.
+      - `$ npm init`
+      - `$ npm start`
+   - Commands to the server can be entered through the text box.
+      - enter `/help` to see list of commands in terminal.
+
 
 # Opencord Server 
 

@@ -22,14 +22,11 @@ import re
 
 # This class is used for communication and has all communication information
 class Communication:
-    def __init__(self):
+    def __init__(self, p_hash="default_hash"):
         self.session_id = None  # ID of the chat session
         self.client_version = ""  # Version of the client
         self.server_version = ""  # Version of the server
-        if len(sys.argv) > 1:
-            self.profile_hash = (sys.argv[1])  # Hash of the user profile  (needs to be implemented)
-        else:
-            self.profile_hash = "Default_Hash"
+        self.profile_hash = p_hash  # Hash of the profile
         self.authorization = ""  # Pending auth to begin using the service
         self.sessionToken = ""  # Token for the session
         self.messageNumber = 0  # keeps track of the number of messages sent so far
@@ -98,7 +95,7 @@ def update(timeout=0.5):
             data = chat.sock.recv(size)
             try:
                 json_data = json.loads(data)
-                if ('size') in json_data.keys():
+                if 'size' in json_data.keys():
                     object_size = json_data['size']
                     # print(f"Size: {size}")
             except Exception as j:
@@ -131,7 +128,12 @@ if __name__ == "__main__":
 
     # sock_udp.sendto(bytes("testing \n", "utf-8"), (HOST, 9091))
 
-    chat = Communication()
+    # check if user provided a profile hash
+    if len(sys.argv) > 1:
+        profile_hash = (sys.argv[1])
+        chat = Communication(profile_hash)
+    else:
+        chat = Communication()
     # Create a socket (SOCK_STREAM means a TCP socket)
 
     header = """\033[91m
