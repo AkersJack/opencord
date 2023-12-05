@@ -115,7 +115,7 @@ client/setEnvironment.txt
 client/setEnvironment.txt.bak
 client/setEnvironment.cmd
 client/setEnvironment.ps1
-server/serverdb.db
+server/outputs/serverdb.db
 serverdb.db
 server/__pycache__/oc_database.cpython-311.pyc
 client/client_stream.py
