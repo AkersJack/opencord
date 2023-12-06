@@ -13,6 +13,9 @@ from icecream import ic  # used for debugging
 import logging
 import sys
 import os
+from Crypto.Random import get_random_bytes
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP, AES
 
 # from logging.handlers import RotatingFileHandler 
 
@@ -57,6 +60,15 @@ class Client:
         client = Client("0.0.0.1", self.data)
         # return message['content']
         return message
+    
+    def encrypt(self, data):
+        cipher = PKCS1_OAEP.new(self.client_key)
+        print(f"Normal data: {data}")
+        encrypted_data = cipher.encrypt("test".encode('utf-8'))
+        #encrypted_data.hex()
+        print(f"Encrypted data: {encrypted_data}")
+        return encrypted_data
+        
 
         """
             Build a new message 
@@ -121,7 +133,7 @@ def update(timeout=1):
     # message = bytes("Testing update", 'utf-8')
     while True:
         # print(f"active connections: {len(opencord_server.active_connections)}")
-        print(f"Active connections: {opencord_server.active_connections}")
+        # print(f"Active connections: {opencord_server.active_connections}")
         for i in opencord_server.active_connections:
             for client, connection in i.items():
                 master_string = ""
@@ -325,7 +337,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
             new_message = bytes(new_message, 'utf-8')
 
             print(f"{self.client_address[0]} wrote: {message}")
-            self.request.sendall(new_message)
+            
+            self.request.sendall(encrypted_message)
 
 
 class ThreadedTCPHandler(socketserver.BaseRequestHandler):
@@ -360,6 +373,11 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
         print(f"{self.client_address[0]} wrote: {self.data}")
 
         client = Client("0.0.0.1", msg_object['profile'])
+        client.client_key = msg_object['key'].encode('utf-8')
+        
+        rsa_key = RSA.import_key(client.client_key)
+
+        
 
         opencord_server.connections.append(client)  # Add client to the list of current connections
         # query = "SELECT 1 FROM user where name = " + msg_object['profile']
@@ -374,7 +392,14 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                 Join a room using the /join roomname (replacing roomname with the room you want to join) command.
                 For more commands enter /help or /? to view the full list of commands.
             """
-            new_message = bytes(welcome, 'utf-8')
+
+            print("Encrypting")
+            encrypted_message = client.encrypt(welcome)
+
+            # new_message = bytes(welcome, 'utf-8')
+            new_message = bytes(encrypted_message, 'utf-8')
+            
+
             self.request.sendall(new_message)
             user_id = opencord_server.database.sanitized_query("SELECT id FROM user WHERE name = ?", [client.phash])
             # user_id = opencord_server.database.query(f"SELECT id FROM user WHERE name = '{client.phash}'") 
@@ -416,7 +441,11 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                     """
                 logger.error(f"Welcome Error: {e}")
 
+            encrypted_message = client.encrypt(welcome)
             new_message = bytes(welcome, 'utf-8')
+
+            print("Encrypting")
+
             self.request.sendall(new_message)
 
         print(f"Client address: {self.client_address}")

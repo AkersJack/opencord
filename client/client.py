@@ -48,12 +48,17 @@ class Communication:
         }
 
         self.messageNumber += 1
+        m = json.dumps(message).encode("utf-8")
         return message
 
     def generateKeys(self):
         key = RSA.generate(2048)
         self.private_key = key.export_key()
-        self.public_key = key.export_key().public_key()
+        test = key.public_key().export_key()
+        print(f"Test key type: {type(test)}")
+        self.public_key = key.public_key().export_key().decode('utf-8')
+        print(f"Actual key type: {type(self.public_key)}")
+
 
     def decrypt(self, message):
         cipher_rsa = PKCS1_OAEP.new(self.private_key)
@@ -61,8 +66,15 @@ class Communication:
 
     # Begin communication with the server 
     def begin(self):
-        start_object = {"service": 0, "client_version": self.client_version, "profile": self.profile_hash}
+        start_object = {"service": 0, 
+                        "client_version": self.client_version, 
+                        "profile": self.profile_hash,
+                        "key":self.public_key,
+                        }
         return start_object
+
+    def encrypt(self, data):
+        pass
 
 
 class Data:
@@ -110,7 +122,7 @@ def update(timeout=0.5):
                 buffer += received
                 object_size -= size
 
-            # print(f"Received: {received}")
+            print(f"Received: {received}")
 
             print("\r" + buffer, end="")
             print("\r" + ">>> ", end="")
@@ -161,6 +173,9 @@ if __name__ == "__main__":
         update.start()
         # Connect to server and send data
         data = None
+        chat.generateKeys()
+        print(f"Public key: {chat.public_key} ")
+        print(f"Private key: {chat.private_key} ")
         sock.connect((HOST, PORT))
         hi_packet = json.dumps(chat.begin()).encode('utf-8')  # send in the starter packet
         sock.sendall(hi_packet)  # Say hi to the server and authorize connection
