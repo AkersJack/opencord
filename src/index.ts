@@ -5,7 +5,7 @@ import * as url from 'url';
 import * as net from 'net';
 import { startClient, chat } from './client';
 import * as stuff from './stuff';
-import {createAccount} from './stuff.tsx';
+import {createAccount, encryptFolder, decryptFolder} from './stuff.tsx';
 
 
 
@@ -24,6 +24,9 @@ if (require('electron-squirrel-startup')) {
 
 let mainWindow; 
 let loginWindow;
+
+let username; 
+let password; 
 
 const createWindow = (): void => {
   // Create the browser window.
@@ -119,13 +122,15 @@ ipcMain.on('register', (event, formData)=>{
 ipcMain.on('login', (event, formData)=>{
   console.log("login"); 
   const data = JSON.parse(formData);
-  const username = data.username;
-  const password = data.password;
+  username = data.username;
+  password = data.password;
+
   // console.log("Username: ", username);
   // console.log("Password: ", password);
   // console.log("Username: ", event.get('username'));
 
   // console.log("Username: ", event.get('password'));
+  stuff.decryptFolder(username, password);
 
 
 });
@@ -136,9 +141,19 @@ ipcMain.on('login', (event, formData)=>{
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
+
+app.on('before-quit', ()=>{
+  stuff.encryptFolder(username, password);
+  console.log("Before quit: ");
+
+});
+
 app.on('window-all-closed', () => {
+  console.log("During quit: ");
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit(
+      stuff.encryptFolder(username, password);
+    );
   }
 });
 

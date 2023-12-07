@@ -108,6 +108,74 @@ const dirpath = path.resolve(__dirname, '../..');
 const filepath = path.join(dirpath, '/oc/');
 console.log("Filepath: " + filepath); 
 
+async function deleteFolderRecursive(folderPath: string) {
+  try {
+    const files = await fs.promises.readdir(folderPath);
+    for (const file of files) {
+      const filePath = path.join(folderPath, file);
+      const stats = await fs.promises.stat(filePath);
+      if (stats.isFile()) {
+        await fs.promises.unlink(filePath);
+      } else if (stats.isDirectory()) {
+        await deleteFolderRecursive(filePath);
+      }
+    }
+    await fs.promises.rmdir(folderPath);
+  } catch (error) {
+    console.error(`Error deleting folder: ${error}`);
+  }
+}
+
+function encryptFolder(username: string, password: string){
+    const folderPath = path.join(filepath, '/', username);
+    try{
+        if(!fs.existsSync(folderPath)){
+            throw new Error("Folder does not exist."); 
+        }
+        folderEncrypt.encrypt({
+            password: password,
+            input: folderPath, 
+        }).then(() =>{
+            console.log("Folder encrypted successfully!");
+            try{
+                deleteFolderRecursive(folderPath); // Delete unencrypted folder
+            }catch(error){
+                console.log("Error deleting unencrypted folder: ", error);
+            }
+        }).catch((err) =>{
+            console.log("Error encrypting folder: ", err);
+        });
+
+    }catch (encryptError) {
+        console.log("Error encrypting: ", encryptError);
+    }
+}
+
+function decryptFolder(username: string, password: string){
+    const folderPath = path.join(filepath, '/', (username + ".encrypted"));
+    try{
+        if(!fs.existsSync(folderPath)){
+            throw new Error("Encrypted item does not exist."); 
+        }
+    folderEncrypt.decrypt({
+        password: password,
+        input: folderPath, 
+    }).then(() =>{
+        console.log("Folder decrypted successfully!");
+        // try{
+        //     deleteFolderRecursive(folderPath); // Delete unencrypted folder
+        // }catch(error){
+        //     console.log("Error deleting unencrypted folder: ", error);
+        // }
+    }).catch((err) =>{
+        console.log("Error decrypting folder: ", err);
+    });
+    }catch(decryptError){
+        console.log("Error decrypting: ", decryptError);
+    }
+    
+}
+
 function createAccount(username: string, password: string){
     const folderPath = path.join(filepath, '/', username);
     try{
@@ -123,14 +191,11 @@ function createAccount(username: string, password: string){
         const data = '';
         fs.writeFileSync(messages_file, data);
     }catch(error){
-        console.error('Error creating folders: ${error}'); 
+        console.error('Error creating folders: ', error); 
     }
-    console.log("Folder path: ", folderPath);
+    // console.log("Folder path encrypt: ", folderPath);
+    encryptFolder(username, password);
 
-    // folderEncrypt.encrypt({
-    //     password: password,
-    //     input: folderPath, 
-    // });
 }
 
-module.exports = {read, write, fileExists, readJSON, writeJSON, createAccount};
+module.exports = {read, write, fileExists, readJSON, writeJSON, createAccount, decryptFolder, encryptFolder};
