@@ -216,7 +216,7 @@ if __name__ == "__main__":
                     # Default case
                     d = chat.send(data)
                     encoded_data = (json.dumps(d)).encode('utf-8')
-                    print(d)
+                    # print(d)
 
                     sock.sendall(encoded_data)
 

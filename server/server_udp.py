@@ -49,7 +49,7 @@ class ThreadedUDPRequestHandler(socketserver.BaseRequestHandler):
         # print(f"Current thread: {current_thread}") 
         socket = self.request[1]
         # udp_server.buffer.append(data)
-        # socket.sendto((bytes("Recieved", 'utf-8')), self.client_address)        
+        socket.sendto((bytes("Recieved", 'utf-8')), self.client_address)        
         # chunk = udp_server.buffer.pop(0)
         socket.sendto(data, self.client_address)
         # print(chunk)

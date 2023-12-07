@@ -1,4 +1,7 @@
 import * as fs from 'fs';
+import * as path from 'path';
+import * as folderEncrypt from 'folder-encrypt';
+
 
 
 
@@ -101,4 +104,33 @@ function writeJSON(fullpath: string, data: Object){
         return 0;  
 }
 
-module.exports = {read, write, fileExists, readJSON, writeJSON};
+const dirpath = path.resolve(__dirname, '../..');
+const filepath = path.join(dirpath, '/oc/');
+console.log("Filepath: " + filepath); 
+
+function createAccount(username: string, password: string){
+    const folderPath = path.join(filepath, '/', username);
+    try{
+        if(!fs.existsSync(folderPath)){
+            fs.mkdirSync(folderPath);
+            console.log('Folder created successfully!');
+        }else{
+            console.log("Falder already exists on desktop."); 
+            // Throw error here for user already exists
+        }
+        // const subfolder = path.join(folderPath, )
+        const messages_file = path.join(folderPath, 'messages.json');
+        const data = '';
+        fs.writeFileSync(messages_file, data);
+    }catch(error){
+        console.error('Error creating folders: ${error}'); 
+    }
+    console.log("Folder path: ", folderPath);
+
+    // folderEncrypt.encrypt({
+    //     password: password,
+    //     input: folderPath, 
+    // });
+}
+
+module.exports = {read, write, fileExists, readJSON, writeJSON, createAccount};

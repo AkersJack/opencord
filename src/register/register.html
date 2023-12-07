@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Opencord</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel= "stylesheet" type= "text/css" href= "./register.css">
+        <script src="./register.js"></script>
+    </head>
+    <body>
+      <div class="Container">
+        <form id="register-form">
+          <h1>Create an account</h1>
+          <label for="username">Username</label><br>
+          <input type="text" name="username" required>
+          <br><label for="password">Password</label><br>
+          <input type="password" name="password" required>
+          <br><label id="message" for="confirm-password">Confirm Password</label><br>
+          <!---<br><span id="message">test</span><br>-->
+          <input type="password" name="confirm-password" onkeyup="checkPassword();" required><br>
+          <br><label for="tandc">Accept Terms and Conditions</label><br>
+          <input type="checkbox" name="tandc" required><br> 
+          <button type="submit" id="register" class="Submit" value="Register">Continue</button>
+        </form>
+      </div>
+    </body>
+</html>
+
+<script>
+
+  const ipcRenderer = require("electron").ipcRenderer; 
+  const toLogin = document.getElementById("register");
+  toLogin.addEventListener('click', () => {
+    ipcRenderer.send('to-login');
+});
+
+  const form = document.getElementById("register-form"); 
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); 
+    const formData = new FormData(this); 
+    const newData  = {"username": formData.get('username'), "password": formData.get('password')};
+    //console.log(newData.username);  
+    const form_string = JSON.stringify(newData);
+    //console.log("Form_string: ", form_string);
+    //console.log(form_string);
+    ipcRenderer.send('register', form_string);
+  });
+</script>

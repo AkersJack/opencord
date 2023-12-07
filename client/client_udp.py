@@ -48,7 +48,7 @@ class Client:
 if __name__ == "__main__":
     # print(audio_stream.readframes(1024))
 
-    HOST, PORT = "", 9090
+    HOST, PORT = "10.0.0.130", 9090
     # data = " ".join(sys.argv[1:])
 
 

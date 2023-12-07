@@ -113,6 +113,13 @@ class Server:
         return message
 
 
+    # Type 3 is server message (alert)
+    # Type 4
+    def build_server_message(self, content=None, type=3):
+        message = {"type":type, "content":content, }
+        
+        return message
+
 opencord_server = Server()
 
 
@@ -121,7 +128,7 @@ def update(timeout=1):
     # message = bytes("Testing update", 'utf-8')
     while True:
         # print(f"active connections: {len(opencord_server.active_connections)}")
-        print(f"Active connections: {opencord_server.active_connections}")
+        # print(f"Active connections: {opencord_server.active_connections}")
         for i in opencord_server.active_connections:
             for client, connection in i.items():
                 master_string = ""
@@ -396,6 +403,7 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                     room_name = opencord_server.database.sanitizedQuery("SELECT name FROM room WHERE id =?", [room_id])
                     # room_name = opencord_server.database.query(f"SELECT name FROM room WHERE id = {room_id}")
                     room_name = room_name.fetchone()[0]
+                    server_message = client.build_server_message(room_name, 3) 
                     welcome = f"""
                     You have joined {room_name}
                     """ + "\n"
