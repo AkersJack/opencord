@@ -124,7 +124,7 @@ def update(timeout=0.5):
 
 
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 9090
+    HOST, PORT = "www.opencord.chat", 9090
     # data = " ".join(sys.argv[1:])
 
     # sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

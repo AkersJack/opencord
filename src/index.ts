@@ -38,6 +38,8 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: false,
     },
+
+
   });
 
 
@@ -46,6 +48,16 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  mainWindow.on('closed', () => {
+    console.log("Username: ", username);
+    console.log("Password: ", password);
+    if(username != null && password != null) {
+      stuff.encryptFolder(username, password);
+    }else{
+      console.log("No username or password");
+    }
+  });
 
 };
 
@@ -131,6 +143,7 @@ ipcMain.on('login', (event, formData)=>{
 
   // console.log("Username: ", event.get('password'));
   stuff.decryptFolder(username, password);
+  mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
 
 
 });
@@ -143,7 +156,11 @@ ipcMain.on('login', (event, formData)=>{
 // explicitly with Cmd + Q.
 
 app.on('before-quit', ()=>{
-  stuff.encryptFolder(username, password);
+  try{
+    stuff.encryptFolder(username, password);
+  }catch(err){
+    console.log("Error before quit: ", err);
+  }
   console.log("Before quit: ");
 
 });
@@ -152,9 +169,11 @@ app.on('window-all-closed', () => {
   console.log("During quit: ");
   if (process.platform !== 'darwin') {
     app.quit(
-      stuff.encryptFolder(username, password);
+      // stuff.encryptFolder(username, password);
     );
-  }
+  } 
+    // stuff.encryptFolder(username, password);
+
 });
 
 app.on('activate', () => {
@@ -166,12 +185,7 @@ app.on('activate', () => {
 });
 
 
-
-
-
-
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-
 
 

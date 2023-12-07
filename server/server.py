@@ -828,7 +828,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 
 if __name__ == '__main__':
-    HOST, PORT = "0.0.0.0", 9090
+    HOST, PORT = "10.200.0.224", 9090
 
     # logging.basicConfig(level=logging.INFO, filename="logfile.log")
     logger = logging.getLogger('logger')

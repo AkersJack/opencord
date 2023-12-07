@@ -127,6 +127,7 @@ async function deleteFolderRecursive(folderPath: string) {
 }
 
 function encryptFolder(username: string, password: string){
+    console.log("Encrypting folder...");
     const folderPath = path.join(filepath, '/', username);
     try{
         if(!fs.existsSync(folderPath)){

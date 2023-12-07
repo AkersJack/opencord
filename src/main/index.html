@@ -4,13 +4,14 @@
     <meta charset="UTF-8"/>
     <title>Opencord</title>
     <link rel= "stylesheet" type= "text/css" href= "index.css">
+    <link rel="stylesheet" type="text/css" href="fonts.css">
 
 </head>
 <body>
 
 <script>
     const { ipcRenderer } = require('electron'); 
-    const {createChatMessage, parseJSON} = require('./src/worker.js');
+    const {createChatMessage, parseJSON} = require('./worker.js');
     ipcRenderer.send('message-from-renderer', {"update":"home"});
     ipcRenderer.on('from-main', (event, arg) =>{
         console.log("Response from main: ", arg); 
