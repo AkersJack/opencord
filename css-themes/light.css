@@ -1,0 +1,381 @@
+:root {
+  --saturation-factor: 1;
+  --primary-900-hsl: 210 calc(var(--saturation-factor, 1) * 9%) 38%;
+  --primary-860-hsl: 210 calc(var(--saturation-factor, 1) * 14%) 42%;
+  --black-500-hsl: 210 calc(var(--saturation-factor, 1) * 5%) 5%;
+}
+
+.theme-light {
+  --guild-header-text-shadow: 0 1px 1px hsl(var(--black-500-hsl) / 0.4);
+  --elevation-stroke: 0 0 0 1px hsl(var(--primary-900-hsl) / 0.15);
+  --elevation-low: 0 1px 0 hsl(var(--primary-900-hsl) / 0.2),
+    0 1.5px 0 hsl(var(--primary-860-hsl) / 0.05),
+    0 2px 0 hsl(var(--primary-900-hsl) / 0.05);
+  --elevation-medium: 0 4px 4px hsl(var(--black-500-hsl) / 0.16);
+  --elevation-high: 0 8px 16px hsl(var(--black-500-hsl) / 0.24);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: auto;
+  background-color: white; /* Light background color */
+  color: black; /* Light text color */
+}
+
+.ServerIconContainer {
+  margin-top: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ServerIcon {
+  width: 48px;
+  height: 48px;
+  background-color: white; /* Light background color */
+  border-radius: 50%;
+  display: flex;
+  outline: none;
+  transition: background-color 0.7s;
+}
+
+.ServerIcon:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: lightcyan; /* Light hover color */
+}
+
+.ServerIcon:active {
+  background-color: lightgray; /* Light active color */
+}
+
+.Container {
+  display: flex;
+  height: 100vh;
+}
+
+.Servers {
+  background-color: white; /* Light background color */
+  min-width: 70px;
+}
+
+.ServerContainer {
+  background-color: lightgray; /* Light background color */
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-dialog {
+  background-color: white; /* Light background color */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-close {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: lightgray; /* Light background color */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.MainContainer {
+  background-color: rgb(245, 245, 245); /* Light background color */
+  width: 100%;
+  display: inline-flex;
+  height: 100%;
+  overflow: auto;
+}
+
+.Members {
+  background-color: lightgray; /* Light background color */
+  min-width: 240px;
+  height: 100%;
+  display: flex;
+}
+
+.Messages {
+  background-color: rgb(245, 245, 245); /* Light background color */
+  height: 100%;
+  overflow: auto;
+}
+
+.TextArea {
+  margin-bottom: 24px;
+  width: 100%;
+  text-indent: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  background-color: white; /* Light background color */
+}
+
+.Message {
+  overflow-x: hidden;
+  max-height: 50vh;
+  border-radius: 8px;
+  width: 100%;
+  background-color: rgb(245, 245, 245); /* Light background color */
+  justify-content: center;
+  font-size: 1em;
+  color: black; /* Light text color */
+  padding-left: 10px;
+}
+
+.TransparentButton {
+  background-color: rgb(245, 245, 245); /* Light background color */
+  border-radius: 5px;
+  margin-left: 5px;
+  padding: 8px;
+  border: none;
+  color: black; /* Light text color */
+  cursor: pointer;
+}
+
+.TransparentButton:hover {
+  background-color: lightgray; /* Light hover color */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.DMSearchBox {
+  margin-bottom: 24px;
+  height: 25px;
+  width: auto;
+  text-indent: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  background-color: white; /* Light background color */
+  color: black; /* Light text color */
+  padding: 10px;
+  border: none;
+  box-sizing: border-box;
+}
+
+.DMTextArea {
+  margin-bottom: 24px;
+  width: 100%;
+  text-indent: 0;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.8); /* Light background color with transparency */
+  color: black; /* Light text color */
+  padding: 8px;
+  height: 20px;
+  resize: none;
+  font: message-box;
+}
+.ChatItems {
+  width: 100%;
+  display: flex;
+}
+
+.Chat {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.Topbar {
+  width: 100%;
+  height: 50px;
+  background-color: rgb(245, 245, 245); /* Light background color */
+  box-sizing: border-box;
+  color: black; /* Light text color */
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-family: 'gg sans Medium Regular';
+  justify-content: right;
+  position: relative;
+  min-height: 48px;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 8px 8px 8px 8px;
+  text-rendering: optimizeLegibility;
+  box-shadow: 
+    0 1px 0 hsl(var(--primary-900-hsl) / 0.2),
+    0 1.5px 0 hsl(var(--primary-860-hsl) / 0.05),
+    0 2px 0 hsl(var(--primary-900-hsl) / 0.05);
+}
+
+.Topbar .icon {
+  margin-left: 8px;
+}
+
+.MainParentContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ServerTopbar {
+  background-color: lightgray; /* Light background color */
+  height: 50px;
+  width: auto;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  position: relative;
+  min-height: 48px;
+  justify-content: center;
+  align-items: center;
+  font-family: "gg sans Medium Regular";
+  font-size: 16px;
+  font-weight: 400;
+  background-origin: padding-box;
+  box-sizing: border-box;
+  box-shadow: 
+    0 1px 0 hsl(var(--primary-900-hsl) / 0.2),
+    0 1.5px 0 hsl(var(--primary-860-hsl) / 0.05),
+    0 2px 0 hsl(var(--primary-900-hsl) / 0.05);
+  color: black; /* Light text color */
+}
+
+.Rooms {
+  background-color: lightgray; /* Light background color */
+  width: 100%;
+  height: 100%;
+}
+
+.Userbar {
+  background-color: rgb(230, 230, 230); /* Light background color */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px;
+}
+
+.UserIcon {
+  color: black; /* Light text color */
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+.ChannelList {
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+
+.ChannelList > li {
+  color: black; /* Light text color */
+}
+
+.MessageList {
+  color: black; /* Light text color */
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+.MessageAvatar {
+  height: 100%;
+  display: flex;
+  padding-left: 16px;
+  padding-right: 16px;
+  justify-content: center;
+}
+
+.MessageBody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.MessageContentsWrapper {}
+
+.MessageContent {}
+
+.MessageListItem {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 17px;
+}
+
+.Avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.MsgWho {
+  font-family: 'gg sans Medium Regular';
+  font-size: 16px;
+  margin-right: 0.25rem;
+}
+
+.MsgWhen {
+  font-family: 'gg sans Medium Regular';
+  font-size: 0.75rem;
+  color: hsl(214 calc(1 * 8.1%) 61.2% / 1);
+  margin-left: 0.25rem;
+}
+
+.MsgEdited {}
+
+#msgTime {}
+
+.ChannelItem {}
+
+.ListBody {
+  font-size: 16px;
+  line-height: 20px;
+  text-rendering: optimizeLegibility;
+  font-family: 'gg sans Medium Regular';
+  display: flex;
+  overflow: hidden;
+  flex: 1 1 auto;
+  margin-left: 8px;
+}
+
+.ListBody > svg {
+  margin-right: 6px;
+}
+
+#addserver > .ServerIcon {
+  background-color: lightgray; /* Light background color */
+  justify-content: center;
+  align-items: center;
+}
+
+#addserver > .ServerIcon > svg {
+  align-items: center;
+}
+
+#homeButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgb(74, 237, 231);
+}
+
+#homeButton:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
