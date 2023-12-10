@@ -115,7 +115,7 @@ client/setEnvironment.txt
 client/setEnvironment.txt.bak
 client/setEnvironment.cmd
 client/setEnvironment.ps1
-server/outputs/serverdb.db
+server/serverdb.db
 serverdb.db
 server/__pycache__/oc_database.cpython-311.pyc
 client/client_stream.py
@@ -156,3 +156,14 @@ build/
 *~
 ws/.gitignore
 ws\README.rst
+server/outputs/opencord_database.db
+oc/Test/account.json
+oc/Test/account.json
+oc/Test/account.json.encrypted
+oc/Test/messages.json
+oc/Test/messages.json.encrypted
+oc/Test/account.json.encrypted
+oc/Test/account.json
+oc/Test/account.json.encrypted
+oc/Test/messages.json
+oc/Test/messages.json.encrypted

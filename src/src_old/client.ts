@@ -116,7 +116,7 @@ ipcMain.on('message-from-renderer', (event, arg)=>{
 
 // Function to create and connect a TCP client
 function startClient() {
-  const client = net.connect({ port: 33664, host: '10.200.49.164' }, () => {
+  const client = net.connect({ port: 9090, host: '10.200.0.224' }, () => {
     console.log('Connected to server');
 
     // Send data to the server

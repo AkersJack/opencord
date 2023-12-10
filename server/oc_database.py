@@ -4,20 +4,17 @@ This file is going to handle everything regarding the database
 import sqlite3
 import json
 import os
-from sqlite3 import Connection
-
 from tabulate import tabulate
 
 
 class Database:
     def __init__(self) -> None:
-        self.location = "./outputs/opencord_database.db"
+        self.location = "./serverdb.db"
         self.cur = None  # Database cursor (needed to execute SQL queries)
-        self.con = None
-        self.connect_to_database()  # Connection instance
+        self.con = self.connectToDatabase()  # Connection instance
 
     # If the database didn't exist create all the tables. 
-    def build_database(self) -> None:
+    def buildDatabase(self) -> None:
 
         # Enable foreign keys
         self.query("PRAGMA foreign_keys = ON")
@@ -44,7 +41,7 @@ class Database:
         for table in tables:
             print(table)
 
-    def check_user(self, user):
+    def checkUser(self, user):
         sql = f"""
         SELECT
             CASE
@@ -58,28 +55,28 @@ class Database:
             END AS value_exists;
         """
 
-        response = self.sanitized_query(
+        response = self.sanitizedQuery(
             "SELECT CASE WHEN EXISTS (SELECT 1 FROM user WHERE name =?) THEN 1 ELSE 0 END AS value_exists", [user])
         return response.fetchone()[0]
 
-    def insert_user(self, user):
-        self.sanitized_query("INSERT INTO user (name) VALUES (?)", [user])
+    def insertUser(self, user):
+        self.sanitizedQuery("INSERT INTO user (name) VALUES (?)", [user])
 
-    # Check if the database exists already and connect. If it doesn't exist create the db file.
-    def connect_to_database(self) -> Connection:
+    # Check if the database exists already and connect. If it doens't exist create the db file. 
+    def connectToDatabase(self) -> None:
         exists = os.path.exists(self.location)
         self.con = sqlite3.connect(self.location, check_same_thread=False)
         self.cur = self.con.cursor()
         if not exists:  # If the database didn't exist create the tables
             print("DB Doesn't Exist. Creating the db...")
-            self.build_database()
+            self.buildDatabase()
         return self.con
 
     # Load the database
     def load_database(self):
         pass
 
-    def sanitized_query(self, command, parameters=None):
+    def sanitizedQuery(self, command, parameters=None):
         command = self.cur.execute(command, parameters)
         self.con.commit()
         return command
