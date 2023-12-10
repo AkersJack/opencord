@@ -156,3 +156,4 @@ build/
 *~
 ws/.gitignore
 ws\README.rst
+server/outputs/opencord_database.db
