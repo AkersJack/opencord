@@ -20,6 +20,7 @@ body{
     text-align: center;
 }
 
+<<<<<<< HEAD:src/src_old/index.css
 .ServerIcon{
   width:48px;
   height:48px;
@@ -35,8 +36,26 @@ body{
 }
 .ServerIcon:active {
   background-color: gray;
+=======
+
+h1{
+    font-size:xx-large;
+    font-family: 'gg sans';
+}
+
+input{
+    /* width:20%; 
+    height:50px; */
+    font-size: 100%;
+    width:416px; 
+    height:40px;
+    box-sizing: border-box;
+    margin-top:10px;
+    margin-bottom: 10px;
+>>>>>>> login:src/index.css
 }
 .Container{
+<<<<<<< HEAD:src/src_old/index.css
   display: flex;
   height:100vh; 
 }
@@ -193,6 +212,37 @@ body{
   font-size: 1em;
   background-color: transparent;
 } */
+=======
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;   
+    margin:0; 
+    /* width:480px; */
+    text-align: center;
+
+}
+label{
+    font-family: "gg sans";
+    float: left;
+}
+button{
+    width:416px;
+    height:44px;
+    background-color: white; 
+    outline: 1px solid black;
+    color:black;
+    background: transparent;
+    transition: 1s ease;
+    &:hover {
+        color: white;
+        background-color: black;
+    }
+    margin-top:10px;
+    margin-bottom: 10px;
+}     
+>>>>>>> login:src/index.css
 
 
 
