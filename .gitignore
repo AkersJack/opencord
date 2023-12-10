@@ -167,3 +167,7 @@ oc/Test/account.json
 oc/Test/account.json.encrypted
 oc/Test/messages.json
 oc/Test/messages.json.encrypted
+oc/Test/account.json.encrypted
+oc/Test/messages.json.encrypted
+oc/Test2/account.json.encrypted
+oc/Test2/messages.json.encrypted

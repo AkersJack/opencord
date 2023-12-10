@@ -146,11 +146,12 @@ ipcMain.on('login', (event, formData)=>{
   // stuff.decryptFolder(username, password);
   const fpath = path.join(filepath, username);
   const value = stuff.decryptDirectory(fpath, password);
+  console.log("Value: ", value);
   if(value){
     console.log("Password Incorrect!");
+  }else{
+    mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
   }
-
-  mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
 
 
 

@@ -195,8 +195,8 @@ function encryptDirectory(directoryPath: string, password: string): void {
   encryptFile(directoryPath, password, true);
 }
 
-function decryptDirectory(directoryPath: string, password: string): void {
-    decryptFile(directoryPath, password, true);
+function decryptDirectory(directoryPath: string, password: string): int {
+   return(decryptFile(directoryPath, password, true));
 }
 
 
