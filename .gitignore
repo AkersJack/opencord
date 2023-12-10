@@ -157,3 +157,13 @@ build/
 ws/.gitignore
 ws\README.rst
 server/outputs/opencord_database.db
+oc/Test/account.json
+oc/Test/account.json
+oc/Test/account.json.encrypted
+oc/Test/messages.json
+oc/Test/messages.json.encrypted
+oc/Test/account.json.encrypted
+oc/Test/account.json
+oc/Test/account.json.encrypted
+oc/Test/messages.json
+oc/Test/messages.json.encrypted
