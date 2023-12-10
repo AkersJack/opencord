@@ -1,0 +1,82 @@
+@font-face {
+    font-family: "gg sans";
+    src: url('./fonts/gg_sans_Regular.ttf');
+}
+
+body{
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.Options{
+    display:flex; 
+    flex-direction: row;
+}
+
+
+.Option{
+    padding: 0px 1em 0px 1em;
+    text-align: center;
+}
+
+
+h1{
+    font-size:xx-large;
+    font-family: 'gg sans';
+}
+
+input{
+    /* width:20%; 
+    height:50px; */
+    font-size: 100%;
+    width:416px; 
+    height:40px;
+    box-sizing: border-box;
+    margin-top:10px;
+    margin-bottom: 10px;
+}
+
+.Container{
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;   
+    margin:0; 
+    /* width:480px; */
+    text-align: center;
+
+}
+label{
+    font-family: "gg sans";
+    float: left;
+}
+button{
+    width:416px;
+    height:44px;
+    background-color: white; 
+    outline: 1px solid black;
+    color:black;
+    background: transparent;
+    transition: 1s ease;
+    &:hover {
+        color: white;
+        background-color: black;
+    }
+    margin-top:10px;
+    margin-bottom: 10px;
+}     
+
+
+
+.flash {
+  margin: 1em 0;
+  padding: 1em;
+  background: #cae6f6;
+  border: 1px solid #377ba8;
+}
+
+#register:hover{
+    cursor:pointer; 
+}

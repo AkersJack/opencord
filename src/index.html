@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Opencord</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+    <body>
+      <div class="Container">
+        <form id="login-form">
+          <h1>Login</h1>
+          <label for="username">Username</label><br>
+          <input type="text" name="username">
+          <br><label for="password">Password</label><br>
+          <input type="password" name="password"><br>
+          <button type="submit" class="Submit">Continue</button>
+        </form>
+      <a href="#" id="register">Don't have an account? Click here</a> 
+      </div>
+    </body>
+</html>
+
+<script>
+
+const ipcRenderer = require("electron").ipcRenderer; 
+const backButton = document.getElementById("register");
+backButton.addEventListener('click', () => {
+    ipcRenderer.send('to-register');
+});
+
+
+const form = document.getElementById("login-form"); 
+form.addEventListener('submit', function(event) {
+  event.preventDefault(); 
+  const formData = new FormData(this); 
+  const newData  = {"username": formData.get('username'), "password": formData.get('password')};
+  //console.log(newData.username);  
+  const form_string = JSON.stringify(newData);
+  //console.log("Form_string: ", form_string);
+  //console.log(form_string);
+  ipcRenderer.send('login', form_string);
+});
+
+
+
+</script>
