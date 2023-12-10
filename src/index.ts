@@ -5,7 +5,7 @@ import * as url from 'url';
 import * as net from 'net';
 import { startClient, chat } from './client';
 import * as stuff from './stuff';
-import {createAccount, encryptFolder, decryptFolder} from './stuff.tsx';
+import {createAccount, encryptFile, encryptDirectyor} from './stuff.tsx';
 
 
 
@@ -16,6 +16,7 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 const dirpath = path.resolve(__dirname, "../../"); 
+const filepath = path.join(dirpath, '/oc/');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -52,11 +53,11 @@ const createWindow = (): void => {
   mainWindow.on('closed', () => {
     console.log("Username: ", username);
     console.log("Password: ", password);
-    if(username != null && password != null) {
-      stuff.encryptFolder(username, password);
-    }else{
-      console.log("No username or password");
-    }
+    // if(username != null && password != null) {
+      // stuff.encryptFolder(username, password);
+    // }else{
+    //   console.log("No username or password");
+    // }
   });
 
 };
@@ -142,8 +143,15 @@ ipcMain.on('login', (event, formData)=>{
   // console.log("Username: ", event.get('username'));
 
   // console.log("Username: ", event.get('password'));
-  stuff.decryptFolder(username, password);
+  // stuff.decryptFolder(username, password);
+  const fpath = path.join(filepath, username);
+  const value = stuff.decryptDirectory(fpath, password);
+  if(value){
+    console.log("Password Incorrect!");
+  }
+
   mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
+
 
 
 });
@@ -155,15 +163,37 @@ ipcMain.on('login', (event, formData)=>{
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 
-app.on('before-quit', ()=>{
+app.on('before-quit', async (event)=>{
   try{
-    stuff.encryptFolder(username, password);
+       await Promise.all([
+        stuff.encryptDirectory(path.join(filepath, username), password),
+    ]);
+    // stuff.encryptDirectory(path.join(filepath,username), password);
+
+
   }catch(err){
     console.log("Error before quit: ", err);
+    app.quit();
   }
-  console.log("Before quit: ");
 
+  app.quit();
 });
+
+app.on('will-quit', () => {
+  console.log("will-quit");
+  app.quit();
+});
+
+// app.on('will-quit', ()=>{
+//   console.log("Will quit");
+//   try{
+//     stuff.encryptFolder(username, password);
+//   }catch(err){
+//     console.log("Error before quit: ", err);
+//   }
+//   console.log("Before quit: ");
+
+// });
 
 app.on('window-all-closed', () => {
   console.log("During quit: ");
@@ -189,3 +219,6 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 
 
+
+// app.on('before-quit', handleQuit);
+// app.on('will-quit', handleQuit);
