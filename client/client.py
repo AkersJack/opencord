@@ -53,7 +53,7 @@ class Communication:
         self.messageNumber += 1
         return message
 
-    def generateKeys(self):
+    def generate_keys(self):
         key = RSA.generate(2048)
         self.private_key = key.export_key()
         self.public_key = key.export_key().public_key()
@@ -98,7 +98,7 @@ def update(timeout=0.5):
             data = chat.sock.recv(size)
             try:
                 json_data = json.loads(data)
-                if ('size') in json_data.keys():
+                if 'size' in json_data.keys():
                     object_size = json_data['size']
                     # print(f"Size: {size}")
             except Exception as j:
@@ -124,7 +124,8 @@ def update(timeout=0.5):
 
 
 if __name__ == "__main__":
-    HOST, PORT = "www.opencord.chat", 9090
+    # HOST, PORT = "www.opencord.chat", 9090
+    HOST, PORT = "localhost", 9090
     # data = " ".join(sys.argv[1:])
 
     # sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -176,7 +177,9 @@ if __name__ == "__main__":
 
             match parsed_command[0]:
                 case "exit":
-                    # Exit the program 
+                    # update the user table by removing the user from the table
+                    d = chat.send(data)
+
                     break
 
                 case "image":
