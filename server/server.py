@@ -523,6 +523,10 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                             current_connected_users = opencord_server.database.sanitized_query(
                                 "SELECT name FROM user WHERE status =?", [1])
 
+                            current_connected_users = current_connected_users.fetchall()
+                            for i, user in enumerate(current_connected_users):
+                                if user[0] == client.phash:
+                                    current_connected_users[i] = [f"{user[0]} (you)"]
                             pretty_format = tabulate(current_connected_users, headers, tablefmt="grid") + "\n"
                             new_message = bytes(pretty_format, 'utf-8')
                             self.request.sendall(new_message)
@@ -801,7 +805,8 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                     if room is not None:
                         opencord_server.database.sanitized_query(
                             "INSERT INTO message (text, room_id, user_id) VALUES (?, ?, ?)", [m, room, client.id])
-                        # opencord_server.database.query(f"INSERT INTO message (text, room_id, user_id) VALUES ('{m}', {room}, {client.id})") 
+                        # opencord_server.database.query(f"INSERT INTO message (text, room_id, user_id) VALUES ('{
+                        # m}', {room}, {client.id})")
 
                     elif conversation is not None:
                         # ic(client.id)
@@ -897,14 +902,17 @@ if __name__ == '__main__':
         print(f"Server running on port {PORT}")
         while True:
             try:
-                t = input("\"Exit\" to stop the server: ")
-                if t == "exit":
+                t = input("\"exit\" to stop the server: ")
+                if t.strip().lower() == "exit":
                     print("Beginning shutdown")
                     for s in opencord_server.active_connections:
                         key = list(s.keys())[0]
                         sock = s[key]
                         sock.close()
                     server.shutdown()
+                    # unbind the socket
+                    server.server_close()
+
                     break
 
             except Exception as e:
@@ -915,4 +923,6 @@ if __name__ == '__main__':
         print("Stopping server")
         logger.info("Stopping Server")
         server.shutdown()
+        # unbind the socket
+        server.server_close()
         # update_thread.stop()

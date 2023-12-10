@@ -165,7 +165,7 @@ if __name__ == "__main__":
         sock.sendall(hi_packet)  # Say hi to the server and authorize connection
         chat.sock = sock
         while data != "/exit":
-            # print("\r>>> ", end="")
+
             data = input()
 
             parsed_command = re.sub(r'^\$', '', data)  # Removes the starting slash from the command
