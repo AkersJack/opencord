@@ -5,7 +5,7 @@ import * as url from 'url';
 import * as net from 'net';
 import { startClient, chat } from './client';
 import * as stuff from './stuff';
-import {createAccount, encryptFile, encryptDirectyor} from './stuff.tsx';
+import {createAccount, encryptFile, encryptDirectory, fileExists} from './stuff.tsx';
 
 
 
@@ -137,6 +137,7 @@ ipcMain.on('login', (event, formData)=>{
   const data = JSON.parse(formData);
   username = data.username;
   password = data.password;
+  const webContents = mainWindow.webContents; 
 
   // console.log("Username: ", username);
   // console.log("Password: ", password);
@@ -145,12 +146,18 @@ ipcMain.on('login', (event, formData)=>{
   // console.log("Username: ", event.get('password'));
   // stuff.decryptFolder(username, password);
   const fpath = path.join(filepath, username);
-  const value = stuff.decryptDirectory(fpath, password);
-  console.log("Value: ", value);
-  if(value){
-    console.log("Password Incorrect!");
+  if(!fileExists(fpath)){
+    webContents.send('from-login', "username");
   }else{
-    mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
+    const value = stuff.decryptDirectory(fpath, password);
+    // console.log("Value: ", value);
+    if(value){
+      console.log("Password Incorrect!");
+      webContents.send('from-login', "password");
+
+    }else{
+      mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
+    }
   }
 
 
