@@ -9,6 +9,7 @@
 <body>
 
 <script>
+    console.log("Worker.j");
     const { ipcRenderer } = require('electron'); 
     const {createChatMessage, parseJSON} = require('./worker.js');
     ipcRenderer.send('message-from-renderer', {"update":"home"});
