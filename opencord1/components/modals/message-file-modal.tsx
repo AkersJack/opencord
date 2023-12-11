@@ -34,36 +34,37 @@ const formSchema = z.object({
 export const MessageFileModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "messageFile"
   const isModalOpen = isOpen && type === "messageFile";
   const { apiUrl, query } = data;
-
+  // Initialize the form using react-hook-form and Zod validation
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fileUrl: "",
     }
   });
-
+  // Close the modal and reset the form
   const handleClose = () => {
     form.reset();
     onClose();
   }
-
+  // Check if the form is currently submitting
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Construct the API URL using query parameters
       const url = qs.stringifyUrl({
         url: apiUrl || "",
         query,
       });
-
+      // Send a POST request to the specified API URL with the form values
       await axios.post(url, {
         ...values,
         content: values.fileUrl,
       });
-
+      // Reset the form, refresh the router, and close the modal
       form.reset();
       router.refresh();
       handleClose();

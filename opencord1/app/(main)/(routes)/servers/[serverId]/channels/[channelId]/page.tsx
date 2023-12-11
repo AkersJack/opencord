@@ -19,18 +19,19 @@ interface ChannelIdPageProps {
 const ChannelIdPage = async ({
   params
 }: ChannelIdPageProps) => {
+  //get the current user's profile
   const profile = await currentProfile();
-
+  //if the user is not authenticated, redirect to sign in page
   if (!profile) {
     return redirectToSignIn();
   }
-
+  // Find the channel with the specified ID
   const channel = await db.channel.findUnique({
     where: {
       id: params.channelId,
     },
   });
-
+  // Find the member associated with the server and the current user
   const member = await db.member.findFirst({
     where: {
       serverId: params.serverId,
@@ -38,10 +39,11 @@ const ChannelIdPage = async ({
     }
   });
 
+  // If the channel or member does not exist, redirect to the home page
   if (!channel || !member) {
     redirect("/");
   }
-
+  //render the chat interface
   return ( 
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
       <ChatHeader

@@ -48,13 +48,14 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
   const params = useParams();
-
+  // Check if the modal is open and the type is "createChannel"
   const isModalOpen = isOpen && type === "createChannel";
   const { channelType } = data;
- 
+  // Initialize the form using the useForm hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,7 +63,7 @@ export const CreateChannelModal = () => {
       type: channelType || ChannelType.TEXT,
     }
   });
-
+  // Set default channel type based on data or ChannelType.TEXT
   useEffect(() => {
     if (channelType) {
       form.setValue("type", channelType);
@@ -70,19 +71,21 @@ export const CreateChannelModal = () => {
       form.setValue("type", ChannelType.TEXT);
     }
   }, [channelType, form]);
-
+  // Check if the form is currently submitting
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Create the URL for the API request
       const url = qs.stringifyUrl({
         url: "/api/channels",
         query: {
           serverId: params?.serverId
         }
       });
+      // Make a POST request to create a new channel
       await axios.post(url, values);
-
+      // Reset the form, refresh the router, and close the modal
       form.reset();
       router.refresh();
       onClose();

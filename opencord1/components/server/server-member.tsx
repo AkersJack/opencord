@@ -11,7 +11,7 @@ interface ServerMemberProps {
   member: Member & { profile: Profile };
   server: Server;
 }
-
+// Map of role to corresponding icon
 const roleIconMap = {
   [MemberRole.GUEST]: null,
   [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
@@ -24,9 +24,9 @@ export const ServerMember = ({
 }: ServerMemberProps) => {
   const params = useParams();
   const router = useRouter();
-
+  // Retrieve the icon based on the member's role
   const icon = roleIconMap[member.role];
-
+  // Handle click event to navigate to member's conversation
   const onClick = () => {
     router.push(`/servers/${params?.serverId}/conversations/${member.id}`)
   }

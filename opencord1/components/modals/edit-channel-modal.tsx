@@ -48,9 +48,10 @@ const formSchema = z.object({
 });
 
 export const EditChannelModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "editChannel"
   const isModalOpen = isOpen && type === "editChannel";
   const { channel, server } = data;
  
@@ -73,14 +74,16 @@ export const EditChannelModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+       // Construct the API URL for updating the channel
       const url = qs.stringifyUrl({
         url: `/api/channels/${channel?.id}`,
         query: {
           serverId: server?.id
         }
       });
+      // Make a PATCH request to update the channel
       await axios.patch(url, values);
-
+      // Reset the form, refresh the router, and close the modal
       form.reset();
       router.refresh();
       onClose();

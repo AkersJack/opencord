@@ -31,7 +31,7 @@ export const ServerHeader = ({
   role
 }: ServerHeaderProps) => {
   const { onOpen } = useModal();
-
+  // Check if the user has admin or moderator role
   const isAdmin = role === MemberRole.ADMIN;
   const isModerator = isAdmin || role === MemberRole.MODERATOR;
 

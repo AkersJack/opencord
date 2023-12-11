@@ -12,12 +12,13 @@ const ServerIdLayout = async ({
   children: React.ReactNode;
   params: { serverId: string };
 }) => {
+  // Retrieve the current user's profile
   const profile = await currentProfile();
-
+  //redirec to sign in if the user is not authenticated
   if (!profile) {
     return redirectToSignIn();
   }
-
+  // Check if the server with the given ID exists and the current user is a member
   const server = await db.server.findUnique({
     where: {
       id: params.serverId,
@@ -28,11 +29,11 @@ const ServerIdLayout = async ({
       }
     }
   });
-
+  // If the server does not exist or the user is not a member, redirect to the home page
   if (!server) {
     return redirect("/");
   }
-
+  // Render the server layout, including the ServerSidebar and the main content
   return ( 
     <div className="h-full">
       <div 

@@ -31,7 +31,7 @@ export const ServerSearch = ({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
-
+  // Open the search dialog using a keyboard shortcut
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -43,10 +43,10 @@ export const ServerSearch = ({
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down)
   }, []);
-
+   // Handle click event for selecting a search result
   const onClick = ({ id, type }: { id: string, type: "channel" | "member"}) => {
     setOpen(false);
-
+    // Navigate to the selected channel or member
     if (type === "member") {
       return router.push(`/servers/${params?.serverId}/conversations/${id}`)
     }

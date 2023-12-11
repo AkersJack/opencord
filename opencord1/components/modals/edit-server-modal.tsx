@@ -38,9 +38,10 @@ const formSchema = z.object({
 });
 
 export const EditServerModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "editServer"
   const isModalOpen = isOpen && type === "editServer";
   const { server } = data;
 
@@ -51,7 +52,7 @@ export const EditServerModal = () => {
       imageUrl: "",
     }
   });
-
+  // Populate form values with server data when the server changes
   useEffect(() => {
     if (server) {
       form.setValue("name", server.name);
@@ -63,8 +64,9 @@ export const EditServerModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Construct the API URL for updating the server
       await axios.patch(`/api/servers/${server?.id}`, values);
-
+      // Reset the form, refresh the router, and close the modal
       form.reset();
       router.refresh();
       onClose();

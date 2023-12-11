@@ -16,9 +16,10 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
 export const DeleteServerModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+   // Check if the modal is open and the type is "deleteServer"
   const isModalOpen = isOpen && type === "deleteServer";
   const { server } = data;
 
@@ -27,9 +28,9 @@ export const DeleteServerModal = () => {
   const onClick = async () => {
     try {
       setIsLoading(true);
-
+      // Make a DELETE request to delete the server using its ID
       await axios.delete(`/api/servers/${server?.id}`);
-
+      // Close the modal, refresh the router, and navigate to the home page
       onClose();
       router.refresh();
       router.push("/");

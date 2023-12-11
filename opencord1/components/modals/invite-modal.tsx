@@ -17,31 +17,34 @@ import { Button } from "@/components/ui/button";
 import { useOrigin } from "@/hooks/use-origin";
 
 export const InviteModal = () => {
+  // Get modal state and data using the useModal hook
   const { onOpen, isOpen, onClose, type, data } = useModal();
   const origin = useOrigin();
-
+  // Check if the modal is open and the type is "invite"
   const isModalOpen = isOpen && type === "invite";
   const { server } = data;
-
+  // State to track if the invite link is copied successfully
   const [copied, setCopied] = useState(false);
+  // State to manage loading state during actions
   const [isLoading, setIsLoading] = useState(false);
-
+  // Construct the invite URL using the server's invite code
   const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
-
+  // Function to handle copying the invite link to the clipboard
   const onCopy = () => {
     navigator.clipboard.writeText(inviteUrl);
     setCopied(true);
-
+    // Reset copied state after 1 second
     setTimeout(() => {
       setCopied(false);
     }, 1000);
   };
-
+  // Function to generate a new invite link for the server
   const onNew = async () => {
     try {
       setIsLoading(true);
+       // Make a PATCH request to generate a new invite link
       const response = await axios.patch(`/api/servers/${server?.id}/invite-code`);
-
+      // Open a new invite modal with the updated server data
       onOpen("invite", { server: response.data });
     } catch (error) {
       console.log(error);

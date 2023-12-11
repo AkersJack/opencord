@@ -12,6 +12,7 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { ChatWelcome } from "./chat-welcome";
 import { ChatItem } from "./chat-item";
 
+//date format defined 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
 type MessageWithMemberWithProfile = Message & {
@@ -49,7 +50,7 @@ export const ChatMessages = ({
 
   const chatRef = useRef<ElementRef<"div">>(null);
   const bottomRef = useRef<ElementRef<"div">>(null);
-
+  // Custom hooks for data fetching, socket handling, and scroll management
   const {
     data,
     fetchNextPage,
@@ -70,7 +71,7 @@ export const ChatMessages = ({
     shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
     count: data?.pages?.[0]?.items?.length ?? 0,
   })
-
+  //loading state
   if (status === "loading") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
@@ -81,7 +82,7 @@ export const ChatMessages = ({
       </div>
     )
   }
-
+  //error state
   if (status === "error") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
@@ -92,7 +93,7 @@ export const ChatMessages = ({
       </div>
     )
   }
-
+  //render chat messages
   return (
     <div ref={chatRef} className="flex-1 flex flex-col py-4 overflow-y-auto">
       {!hasNextPage && <div className="flex-1" />}

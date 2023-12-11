@@ -16,20 +16,21 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
 export const LeaveServerModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "leaveServer"
   const isModalOpen = isOpen && type === "leaveServer";
   const { server } = data;
-
+  // State to manage loading state during leave server action
   const [isLoading, setIsLoading] = useState(false);
-
+  // Function to handle leaving the server
   const onClick = async () => {
     try {
       setIsLoading(true);
-
+      // Make a PATCH request to leave the server
       await axios.patch(`/api/servers/${server?.id}/leave`);
-
+      // Close the modal, refresh the router, and navigate to the home page
       onClose();
       router.refresh();
       router.push("/");

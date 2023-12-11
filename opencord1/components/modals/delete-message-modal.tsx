@@ -16,23 +16,26 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
 export const DeleteMessageModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
 
+  // Check if the modal is open and the type is "deleteMessage"
   const isModalOpen = isOpen && type === "deleteMessage";
   const { apiUrl, query } = data;
-
+  // State to manage loading state during deletion
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = async () => {
     try {
       setIsLoading(true);
+      // Create the URL for the DELETE request
       const url = qs.stringifyUrl({
         url: apiUrl || "",
         query,
       });
-
+      // Make a DELETE request to delete the message
       await axios.delete(url);
-
+      // Close the modal after successful deletion
       onClose();
     } catch (error) {
       console.log(error);

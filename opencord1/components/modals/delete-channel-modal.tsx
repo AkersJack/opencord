@@ -17,26 +17,28 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Button } from "@/components/ui/button";
 
 export const DeleteChannelModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "deleteChannel"
   const isModalOpen = isOpen && type === "deleteChannel";
   const { server, channel } = data;
-
+  // State to manage loading state during deletion
   const [isLoading, setIsLoading] = useState(false);
 
   const onClick = async () => {
     try {
       setIsLoading(true);
+       // Create the URL for the DELETE request
       const url = qs.stringifyUrl({
         url: `/api/channels/${channel?.id}`,
         query: {
           serverId: server?.id,
         }
       })
-
+      // Make a DELETE request to delete the channel
       await axios.delete(url);
-
+      // Close the modal, refresh the router, and navigate to the server's channel list
       onClose();
       router.refresh();
       router.push(`/servers/${server?.id}`);

@@ -11,6 +11,7 @@ export const QueryProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  // State variable to hold an instance of the QueryClient
   const [queryClient] = useState(() => new QueryClient());
 
   return (

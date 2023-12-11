@@ -24,7 +24,7 @@ interface ChatInputProps {
   name: string;
   type: "conversation" | "channel";
 }
-
+// Define the Zod schema for the form validation
 const formSchema = z.object({
   content: z.string().min(1),
 });
@@ -35,27 +35,29 @@ export const ChatInput = ({
   name,
   type,
 }: ChatInputProps) => {
+  // Retrieve modal-related functions and router from Next.js
   const { onOpen } = useModal();
   const router = useRouter();
-
+  // Initialize the React Hook Form with the defined Zod schema and default values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
     }
   });
-
+  // Check if the form is in a submitting/loading state
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Construct the URL for the API call using query parameters
       const url = qs.stringifyUrl({
         url: apiUrl,
         query,
       });
-
+      // Perform a POST request to the specified API endpoint with the form values
       await axios.post(url, values);
-
+      // Reset the form and refresh the page
       form.reset();
       router.refresh();
     } catch (error) {

@@ -11,12 +11,13 @@ import { NavigationAction } from "./navigation-action";
 import { NavigationItem } from "./navigation-item";
 
 export const NavigationSidebar = async () => {
+  // Fetch the current user's profile
   const profile = await currentProfile();
-
+  // If the user is not logged in, redirect to the home page
   if (!profile) {
     return redirect("/");
   }
-
+  // Fetch the list of servers that the user is a member of
   const servers = await db.server.findMany({
     where: {
       members: {

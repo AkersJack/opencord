@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
-
+// Define the schema for the server creation form
 const formSchema = z.object({
   name: z.string().min(1, {
     message: "Server name is required."
@@ -37,11 +37,12 @@ const formSchema = z.object({
 });
 
 export const CreateServerModal = () => {
+  // Get modal state and data using the useModal hook
   const { isOpen, onClose, type } = useModal();
   const router = useRouter();
-
+  // Check if the modal is open and the type is "createServer"
   const isModalOpen = isOpen && type === "createServer";
-
+  // Initialize the form using the useForm hook
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,13 +50,14 @@ export const CreateServerModal = () => {
       imageUrl: "",
     }
   });
-
+  // Check if the form is currently submitting
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Make a POST request to create a new server
       await axios.post("/api/servers", values);
-
+      // Reset the form, refresh the router, and close the modal
       form.reset();
       router.refresh();
       onClose();
@@ -63,7 +65,7 @@ export const CreateServerModal = () => {
       console.log(error);
     }
   }
-
+  // Handle modal closure
   const handleClose = () => {
     form.reset();
     onClose();

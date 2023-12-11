@@ -16,12 +16,13 @@ import { ServerMember } from "./server-member";
 interface ServerSidebarProps {
   serverId: string;
 }
-
+// Icon mappings for different channel types
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
   [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
   [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />
 };
+// Icon mappings for different member roles
 
 const roleIconMap = {
   [MemberRole.GUEST]: null,
@@ -32,12 +33,13 @@ const roleIconMap = {
 export const ServerSidebar = async ({
   serverId
 }: ServerSidebarProps) => {
+  // Fetch the current user's profile
   const profile = await currentProfile();
-
+  // Redirect to the home page if the user's profile is not found
   if (!profile) {
     return redirect("/");
   }
-
+  // Fetch server details including channels and members
   const server = await db.server.findUnique({
     where: {
       id: serverId,
@@ -58,7 +60,7 @@ export const ServerSidebar = async ({
       }
     }
   });
-
+  // Filter channels and members based on their types
   const textChannels = server?.channels.filter((channel) => channel.type === ChannelType.TEXT)
   const audioChannels = server?.channels.filter((channel) => channel.type === ChannelType.AUDIO)
   const videoChannels = server?.channels.filter((channel) => channel.type === ChannelType.VIDEO)
@@ -67,7 +69,7 @@ export const ServerSidebar = async ({
   if (!server) {
     return redirect("/");
   }
-
+  // Determine the role of the current user in the server
   const role = server.members.find((member) => member.profileId === profile.id)?.role;
 
   return (

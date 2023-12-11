@@ -9,6 +9,7 @@ export const ChatWelcome = ({
   name,
   type
 }: ChatWelcomeProps) => {
+  //render welcome message depending on the channel
   return (
     <div className="space-y-2 px-4 mb-4">
       {type === "channel" && (

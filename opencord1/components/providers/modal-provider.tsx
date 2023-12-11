@@ -15,12 +15,13 @@ import { MessageFileModal } from "@/components/modals/message-file-modal";
 import { DeleteMessageModal } from "@/components/modals/delete-message-modal";
 
 export const ModalProvider = () => {
+  // State variable to track component mounting
   const [isMounted, setIsMounted] = useState(false);
-
+  // Effect to set isMounted to true after the component mounts
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  // If the component is not mounted, return null (don't render anything)
   if (!isMounted) {
     return null;
   }

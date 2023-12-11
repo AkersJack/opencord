@@ -38,7 +38,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
-
+// Map of role names to corresponding icons
 const roleIconMap = {
   "GUEST": null,
   "MODERATOR": <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
@@ -49,10 +49,10 @@ export const MembersModal = () => {
   const router = useRouter();
   const { onOpen, isOpen, onClose, type, data } = useModal();
   const [loadingId, setLoadingId] = useState("");
-
+  // Check if the modal is open and the type is "members"
   const isModalOpen = isOpen && type === "members";
   const { server } = data as { server: ServerWithMembersWithProfiles };
-
+  // Function to handle kicking a member from the server
   const onKick = async (memberId: string) => {
     try {
       setLoadingId(memberId);
@@ -73,7 +73,7 @@ export const MembersModal = () => {
       setLoadingId("");
     }
   }
-
+  // Function to handle changing a member's role
   const onRoleChange = async (memberId: string, role: MemberRole) => {
     try {
       setLoadingId(memberId);

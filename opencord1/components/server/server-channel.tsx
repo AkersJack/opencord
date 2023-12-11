@@ -33,13 +33,13 @@ export const ServerChannel = ({
   const { onOpen } = useModal();
   const params = useParams();
   const router = useRouter();
-
+  // Map channel types to corresponding icons
   const Icon = iconMap[channel.type];
-
+  // Function to navigate to the channel on click
   const onClick = () => {
     router.push(`/servers/${params?.serverId}/channels/${channel.id}`)
   }
-
+  // Function to handle actions like editing or deleting a channel
   const onAction = (e: React.MouseEvent, action: ModalType) => {
     e.stopPropagation();
     onOpen(action, { channel, server });

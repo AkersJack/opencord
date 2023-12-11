@@ -38,7 +38,7 @@ interface ChatItemProps {
   socketUrl: string;
   socketQuery: Record<string, string>;
 };
-
+// Map of role icons based on member roles
 const roleIconMap = {
   "GUEST": null,
   "MODERATOR": <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
@@ -61,6 +61,7 @@ export const ChatItem = ({
   socketUrl,
   socketQuery
 }: ChatItemProps) => {
+  // State to track if the message is being edited
   const [isEditing, setIsEditing] = useState(false);
   const { onOpen } = useModal();
   const params = useParams();
@@ -70,10 +71,10 @@ export const ChatItem = ({
     if (member.id === currentMember.id) {
       return;
     }
-  
+    // Redirect to the conversation page when clicking on a member
     router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
   }
-
+  // Effect hook to listen for the "Escape" key and cancel editing
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       if (event.key === "Escape" || event.keyCode === 27) {
@@ -85,45 +86,48 @@ export const ChatItem = ({
 
     return () => window.removeEventListener("keyDown", handleKeyDown);
   }, []);
-
+  // Initialize the React Hook Form with the defined Zod schema and default values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: content
     }
   });
-
+  // Check if the form is in a submitting/loading state
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Construct the URL for the PATCH request to update the message
       const url = qs.stringifyUrl({
         url: `${socketUrl}/${id}`,
         query: socketQuery,
       });
-
+      // Perform a PATCH request to update the message content
       await axios.patch(url, values);
-
+      // Reset the form and exit editing mode
       form.reset();
       setIsEditing(false);
     } catch (error) {
       console.log(error);
     }
   }
-
+  // Effect hook to reset the form when the content prop changes
   useEffect(() => {
     form.reset({
       content: content,
     })
   }, [content]);
-
+  // Determine the type of file (PDF or image) based on the file URL
   const fileType = fileUrl?.split(".").pop();
-
+  // Determine user roles for conditional rendering
   const isAdmin = currentMember.role === MemberRole.ADMIN;
   const isModerator = currentMember.role === MemberRole.MODERATOR;
   const isOwner = currentMember.id === member.id;
+  // Determine if the current member can delete or edit the message
   const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner);
   const canEditMessage = !deleted && isOwner && !fileUrl;
+  // Determine if the file is a PDF or an image
   const isPDF = fileType === "pdf" && fileUrl;
   const isImage = !isPDF && fileUrl;
 

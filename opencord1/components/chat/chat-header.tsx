@@ -20,6 +20,7 @@ export const ChatHeader = ({
   imageUrl
 }: ChatHeaderProps) => {
   return (
+    // Render the chat header with different components based on the type
     <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
       <MobileToggle serverId={serverId} />
       {type === "channel" && (

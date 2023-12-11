@@ -40,11 +40,11 @@ export const InitialModal = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   const router = useRouter();
-
+  // useEffect to set isMounted to true when the component is mounted
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  // Initialize the form using useForm from react-hook-form
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,13 +52,14 @@ export const InitialModal = () => {
       imageUrl: "",
     }
   });
-
+  // Check if the form is currently submitting
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Make a POST request to create a new server using the provided values
       await axios.post("/api/servers", values);
-
+      // Reset the form, refresh the router, and reload the window
       form.reset();
       router.refresh();
       window.location.reload();
