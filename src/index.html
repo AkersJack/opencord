@@ -12,6 +12,7 @@
       <div class="Container">
         <form id="login-form">
           <h1>Login</h1>
+          <br><span id="error-message"></span><br>
           <label for="username">Username</label><br>
           <input type="text" name="username">
           <br><label for="password">Password</label><br>
@@ -42,6 +43,16 @@ form.addEventListener('submit', function(event) {
   //console.log("Form_string: ", form_string);
   //console.log(form_string);
   ipcRenderer.send('login', form_string);
+
+  ipcRenderer.on('from-login', (event, arg) =>{
+    if(arg == 'password'){
+      console.log("Login Failed invalid password.");
+      document.getElementById('error-message').innerHTML = "Error: Invalid Password";
+    }else{
+      console.log("Invalid Username.");
+      document.getElementById('error-message').innerHTML = "Error: Username not found.";
+    }
+  }); 
 });
 
 
