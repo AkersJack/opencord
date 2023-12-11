@@ -31,7 +31,8 @@ function sendMessageToRenderer(message: object){
 const base_path = path.join(dirpath,  "/oc/");
 const theme_path = path.join(base_path, "/themes/");
 const profile_path = path.join(base_path, "/profile/");
-const message_path = path.join(base_path, "profile/", "messages.json")
+const message_path = path.join(base_path, "profile/", "messages.json");
+const account_path = path.join(base_path, "profile/", "account.json");
 
 // console.log("base_path: " + base_path);
 // console.log("theme_path: " + theme_path);
@@ -45,6 +46,7 @@ class Communication{
     client_version: string;
     server_version:string;
     profile_hash: string; 
+    username: string; 
     messageNumber: number;
     public_key: string; 
     private_key: string;
@@ -116,7 +118,7 @@ ipcMain.on('message-from-renderer', (event, arg)=>{
 
 // Function to create and connect a TCP client
 function startClient() {
-  const client = net.connect({ port: 9090, host: '10.200.0.224' }, () => {
+  const client = net.connect({ port: 9090, host: '127.0.0.1' }, () => {
     console.log('Connected to server');
 
     // Send data to the server
@@ -125,11 +127,14 @@ function startClient() {
 
   
   let message_data = tools.readJSON(message_path);
+  let account_data = tools.readJSON(account_path);
+  console.log(account_data);
   // console.log("MessageData: ", message_data);
 
   let m = null; 
   chat.sock = client; 
-  chat.profile_hash = "Test";
+  chat.profile_hash = account_data.name; 
+  chat.username = account_data.UUID; 
   let matches = [];
   let changes = false;
   let parsed = null; 
@@ -189,7 +194,7 @@ function startClient() {
           }
 
         }else{
-          console.log("Something else \n"); 
+          console.log("Something else (probably update packet) \n"); 
         }
 
       }catch(error){
