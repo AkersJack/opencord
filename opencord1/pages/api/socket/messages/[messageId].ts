@@ -14,7 +14,9 @@ export default async function handler(
   }
 
   try {
+    // Retrieve the current user's profile based on the request
     const profile = await currentProfilePages(req);
+    
     const { messageId, serverId, channelId } = req.query;
     const { content } = req.body;
 
@@ -29,7 +31,7 @@ export default async function handler(
     if (!channelId) {
       return res.status(400).json({ error: "Channel ID missing" });
     }
-
+    // Find the server with the given serverId that the user is a member of
     const server = await db.server.findFirst({
       where: {
         id: serverId as string,
@@ -47,7 +49,7 @@ export default async function handler(
     if (!server) {
       return res.status(404).json({ error: "Server not found" });
     }
-
+    // Find the channel with the given channelId
     const channel = await db.channel.findFirst({
       where: {
         id: channelId as string,
@@ -64,7 +66,7 @@ export default async function handler(
     if (!member) {
       return res.status(404).json({ error: "Member not found" });
     }
-
+    // Find the message with the given messageId and channelId, including the member's profile
     let message = await db.message.findFirst({
       where: {
         id: messageId as string,
@@ -82,7 +84,7 @@ export default async function handler(
     if (!message || message.deleted) {
       return res.status(404).json({ error: "Message not found" });
     }
-
+    // Check if the current user has the authority to modify the message
     const isMessageOwner = message.memberId === member.id;
     const isAdmin = member.role === MemberRole.ADMIN;
     const isModerator = member.role === MemberRole.MODERATOR;
@@ -91,7 +93,7 @@ export default async function handler(
     if (!canModify) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
+    //Soft delete the message by updating its properties
     if (req.method === "DELETE") {
       message = await db.message.update({
         where: {
@@ -111,7 +113,7 @@ export default async function handler(
         }
       })
     }
-
+    //Update the content of the message if the user is the owner
     if (req.method === "PATCH") {
       if (!isMessageOwner) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -137,7 +139,7 @@ export default async function handler(
     const updateKey = `chat:${channelId}:messages:update`;
 
     res?.socket?.server?.io?.emit(updateKey, message);
-
+    //return updated message
     return res.status(200).json(message);
   } catch (error) {
     console.log("[MESSAGE_ID]", error);

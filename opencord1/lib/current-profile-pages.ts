@@ -9,7 +9,7 @@ export const currentProfilePages = async (req: NextApiRequest) => {
   if (!userId) {
     return null;
   }
-
+  //return user profile with the specific id
   const profile = await db.profile.findUnique({
     where: {
       userId

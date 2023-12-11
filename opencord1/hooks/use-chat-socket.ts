@@ -28,13 +28,13 @@ export const useChatSocket = ({
     if (!socket) {
       return;
     }
-
+    // Listen for real-time updates when a new message is added
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;
         }
-
+        // Update the data in the query cache with the new message
         const newData = oldData.pages.map((page: any) => {
           return {
             ...page,
@@ -53,7 +53,7 @@ export const useChatSocket = ({
         }
       })
     });
-
+    // Listen for real-time updates when a new message is added
     socket.on(addKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -63,7 +63,7 @@ export const useChatSocket = ({
             }]
           }
         }
-
+        // Update the data in the query cache with the new message
         const newData = [...oldData.pages];
 
         newData[0] = {
@@ -80,7 +80,7 @@ export const useChatSocket = ({
         };
       });
     });
-
+    // Clean up event listeners when the component unmounts
     return () => {
       socket.off(addKey);
       socket.off(updateKey);

@@ -3,7 +3,7 @@ import { NextApiRequest } from "next";
 import { NextApiResponseServerIo } from "@/types";
 import { currentProfilePages } from "@/lib/current-profile-pages";
 import { db } from "@/lib/db";
-
+//create a new message in a channel within a server
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIo,
@@ -13,6 +13,7 @@ export default async function handler(
   }
 
   try {
+    // Retrieve the current user's profile based on the request
     const profile = await currentProfilePages(req);
     const { content, fileUrl } = req.body;
     const { serverId, channelId } = req.query;
@@ -32,7 +33,7 @@ export default async function handler(
     if (!content) {
       return res.status(400).json({ error: "Content missing" });
     }
-
+    // Find the server with the given serverId that the user is a member of
     const server = await db.server.findFirst({
       where: {
         id: serverId as string,
@@ -50,7 +51,7 @@ export default async function handler(
     if (!server) {
       return res.status(404).json({ message: "Server not found" });
     }
-
+    // Find the channel with the given channelId
     const channel = await db.channel.findFirst({
       where: {
         id: channelId as string,
@@ -61,13 +62,13 @@ export default async function handler(
     if (!channel) {
       return res.status(404).json({ message: "Channel not found" });
     }
-
+    // Find the member associated with the current user in the server
     const member = server.members.find((member) => member.profileId === profile.id);
 
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
-
+    // Create a new message in the channel
     const message = await db.message.create({
       data: {
         content,

@@ -18,8 +18,9 @@ export const FileUpload = ({
   value,
   endpoint
 }: FileUploadProps) => {
+  // Extract file type from the file name
   const fileType = value?.split(".").pop();
-
+  // If a value is present and the file is not a PDF, display the image with a delete button
   if (value && fileType !== "pdf") {
     return (
       <div className="relative h-20 w-20">
@@ -39,7 +40,7 @@ export const FileUpload = ({
       </div>
     )
   }
-
+  // If a value is present and the file is a PDF, display a link to the PDF with a delete button
   if (value && fileType === "pdf") {
     return (
       <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
@@ -62,7 +63,7 @@ export const FileUpload = ({
       </div>
     )
   }
-
+  // If no value is present or the file is not an image or PDF, display a dropzone for file uploads
   return (
     <UploadDropzone
       endpoint={endpoint}

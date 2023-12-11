@@ -22,12 +22,12 @@ export const useChatScroll = ({
 
     const handleScroll = () => {
       const scrollTop = topDiv?.scrollTop;
-
+      // Check if the user has scrolled to the top and more messages should be loaded
       if (scrollTop === 0 && shouldLoadMore) {
         loadMore()
       }
     };
-
+    // Attach the scroll event listener to the chat container
     topDiv?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -38,6 +38,7 @@ export const useChatScroll = ({
   useEffect(() => {
     const bottomDiv = bottomRef?.current;
     const topDiv = chatRef.current;
+    // Function to determine whether auto-scrolling should occur
     const shouldAutoScroll = () => {
       if (!hasInitialized && bottomDiv) {
         setHasInitialized(true);
@@ -51,7 +52,7 @@ export const useChatScroll = ({
       const distanceFromBottom = topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight;
       return distanceFromBottom <= 100;
     }
-
+    // If auto-scrolling is needed, scroll to the bottom with a smooth behavior
     if (shouldAutoScroll()) {
       setTimeout(() => {
         bottomRef.current?.scrollIntoView({
