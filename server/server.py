@@ -313,7 +313,7 @@ def update(timeout=1):
 
         result = opencord_server.database.query("SELECT name FROM room")
         result = result.fetchall()
-        print(f"Result: {result[0]}") 
+        print(f"Result: {result}") 
 
         headers = ["Users"]
         # get all users with a status of 1 (online)

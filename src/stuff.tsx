@@ -172,9 +172,14 @@ function decryptFile(filePath: string, password: string, isRecursive: boolean): 
                 const newFilePath_enc = path.join(filePath, item);
                 const newFilePath = path.join(filePath, item.split('.encrypted')[0]);
                 const encryptedFile = fs.readFileSync(newFilePath_enc, 'utf8');
-                const decryptContent = crypto.AES.decrypt(encryptedFile, password).toString(crypto.enc.Utf8);
-                fs.writeFileSync(newFilePath, decryptContent, 'utf8'); 
-                console.log("decrypted content: ", decryptContent);
+                const decryptContent = crypto.AES.decrypt(encryptedFile, password);
+
+                if(decryptContent.sigBytes <= 0){
+                    throw new Error("Error decrypting files.");
+                }
+                const decrypted_string = decryptContent.toString(crypto.enc.Utf8);
+                fs.writeFileSync(newFilePath, decrypted_string, 'utf8'); 
+                console.log("decrypted content: ", decrypted_string);
                 console.log("File Decrypted: ", newFilePath);
                 // fs.unlinkSync(newFilePath_enc);
                 });
@@ -279,7 +284,7 @@ function createAccount(username: string, password: string){
         }
         // const subfolder = path.join(folderPath, )
         const messages_file = path.join(folderPath, 'messages.json');
-        const data = '';
+        const data = '{}';
         fs.writeFileSync(messages_file, data);
         fs.writeFileSync(accountDetails, jsonString);
         console.log("Account Details written successfully!");
@@ -296,4 +301,4 @@ function createAccount(username: string, password: string){
 
 
 
-module.exports = {read, write, fileExists, readJSON, writeJSON, createAccount, encryptFile, encryptDirectory, decryptFile, decryptDirectory};
+module.exports = {read, write, fileExists, readJSON, writeJSON, createAccount, encryptFile, encryptDirectory, decryptFile, decryptDirectory, fileExists};
