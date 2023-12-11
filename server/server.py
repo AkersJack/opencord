@@ -13,7 +13,6 @@ from icecream import ic  # used for debugging
 import logging
 import sys
 import os
-
 # from logging.handlers import RotatingFileHandler 
 
 # Versioning 
@@ -142,12 +141,12 @@ def update(timeout=1):
                 # TODO: Merge these into 1 query 
                 room = opencord_server.database.sanitized_query("SELECT room FROM user WHERE name =?", [client.phash])
                 room = room.fetchone()
-                print(f"Room: {room}")
+                # print(f"Room: {room}")
 
                 conversation = opencord_server.database.sanitized_query("SELECT conv_id FROM user WHERE name =?",
                                                                         [client.phash])
                 conversation = conversation.fetchone()
-                print(f"Conversation: {conversation}")
+                # print(f"Conversation: {conversation}")
 
                 # room = opencord_server.database.query(f"SELECT room FROM user WHERE name = '{client.phash}'")
 
@@ -306,6 +305,39 @@ def update(timeout=1):
                         # ic(master_string)
                         message = bytes(master_string, 'utf-8')
                         connection.sendall(message)
+
+
+        # Update the channel list
+        # Update the Currently connected users list 
+        # Update the conversations (the number of conversations and the users)
+
+        result = opencord_server.database.query("SELECT name FROM room")
+        result = result.fetchall()
+        print(f"Result: {result}") 
+
+        headers = ["Users"]
+        # get all users with a status of 1 (online)
+        current_connected_users = opencord_server.database.sanitized_query(
+            "SELECT name FROM user WHERE status =?", [1])
+
+        current_connected_users = current_connected_users.fetchall()
+        for i, user in enumerate(current_connected_users):
+            if user[0] == client.phash:
+                current_connected_users[i] = user
+
+        print(f"Current connected users: {current_connected_users}")
+
+        update_packet = {
+                    # Run get users command 
+                    # Run get channels/rooms command 
+                    # Update the conversations/pms and the number of users in the PM 
+                
+                
+                }
+
+
+
+        
 
         time.sleep(timeout)
 

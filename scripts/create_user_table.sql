@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS user (
                 id INTEGER PRIMARY KEY,
                 name VARCHAR(16),
+                uuid VARCHAR(48),
                 created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 version VARCHAR(45),
                 status VARCHAR(45),
