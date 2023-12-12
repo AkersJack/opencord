@@ -352,7 +352,7 @@ body {
 }
 
 .Selected{
-  color:Red; 
+  color: rgba(78, 80, 88, 0.6);
 }
 
 .ChannelList > li{
