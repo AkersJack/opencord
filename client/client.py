@@ -42,6 +42,7 @@ class Communication:
 
     # Message content, type is the type of message (normal is command or chat, file is a file object)
     def send(self, content, type="normal", size=1024, file_name = None):
+    # def send(self, content, type="normal", size=1024):
         message = {
             "n": self.messageNumber,
             "time": (datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
@@ -49,7 +50,7 @@ class Communication:
             "token": "NEED TO IMPLEMENT!",
             "type": type,
             "size": size,
-            "name:": file_name
+            "name": file_name
         }
 
         self.messageNumber += 1
@@ -192,7 +193,11 @@ if __name__ == "__main__":
                     file = open(location, 'rb')
                     sod = os.path.getsize(location)
                     filename = os.path.basename(location)
+                    print(f"Filename: {filename}")
                     d = chat.send(None, type="file", size=sod, file_name = filename)
+                    # d = chat.send(None, type="file", size=sod)
+
+
                     # TO print the file to double check contents
                     # byte = file.read(1)
                     # entire_file = b""

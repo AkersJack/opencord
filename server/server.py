@@ -540,10 +540,12 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
 
                 # print(f"Stripped data: {self.data.strip()}")
                 message = self.data.strip()
-                # message = message.decode('utf-8') 
+                # message = message.decode('ascii') 
                 m = client.read_message(message)
                 if m['type'] == 'file':
+                    print(f"m: {m}")
                     name = m['name']
+
                     size = m['size']
                     print(f"Prep to receive: {size}")
                     print(0)
