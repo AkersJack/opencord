@@ -29,3 +29,6 @@ export const rules: Required<ModuleOptions>['rules'] = [
     },
   },
 ];
+
+
+
