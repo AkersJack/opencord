@@ -129,7 +129,7 @@ ipcMain.on('message-from-renderer', (event, arg)=>{
 
 // Function to create and connect a TCP client
 function startClient() {
-  const client = net.connect({ port: 9090, host: '127.0.0.1' }, () => {
+  const client = net.connect({ port: 9090, host: 'www.opencord.chat' }, () => {
     console.log('Connected to server');
     // console.log("Message: ", chat.message);
 
@@ -209,8 +209,8 @@ function startClient() {
 
         }else if (parsed.hasOwnProperty("type")){
           if(parsed["type"] == 3){
-            console.log("Update the items");
-            console.log("Rooms: ", parsed["rooms"]);
+            // console.log("Update the items");
+            // console.log("Rooms: ", parsed["rooms"]);
             sendMessageToRenderer({"update-server": parsed});
           }
 
