@@ -1,9 +1,37 @@
 function createChatMessage(content=null, avatar=null, who=null, when=null, add=true, edited=false) {
+    var image = null; 
+    var image_type = null; 
+    if(who == "Jack"){ 
+        image = './images/avatar_jack.webp';
+    }else if(who == "nick"){
+        image = './images/avatar_nick.webp';
+    }else if(who == "zain"){
+        image = './images/avatar_zain.webp';
+    }else if(who == "diyor"){
+        image = './images/avatar_zain.webp';
+    }else{
+        // image = './images/default.svg';
+        image = '<svg width="38px" height="38px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/><path d="M21.6359 12.9579L21.3572 14.8952C20.8697 18.2827 20.626 19.9764 19.451 20.9882C18.2759 22 16.5526 22 13.1061 22H10.8939C7.44737 22 5.72409 22 4.54903 20.9882C3.37396 19.9764 3.13025 18.2827 2.64284 14.8952L2.36407 12.9579C1.98463 10.3208 1.79491 9.00229 2.33537 7.87495C2.87583 6.7476 4.02619 6.06234 6.32691 4.69181L7.71175 3.86687C9.80104 2.62229 10.8457 2 12 2C13.1543 2 14.199 2.62229 16.2882 3.86687L17.6731 4.69181C19.9738 6.06234 21.1242 6.7476 21.6646 7.87495" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/></svg>';
+        image_type = 'svg'; 
+    }
     var listItem = document.createElement('li');
     listItem.className = 'MessageListItem';
     var divItem = document.createElement('div');
     divItem.className = "MessageAvatar";
-    var imageItem = document.createElement('img');
+    if(image_type != 'svg'){
+        var imageItem = document.createElement('img');
+        imageItem.src = image; 
+    }else{
+        const fill = Math.floor(Math.random()*16777215).toString(16); 
+        // console.log("Fill: " + fill);
+
+        imageItem = document.createElement('div');
+        imageItem.innerHTML = image; 
+        imageItem.child
+        // imageItem.style.backgroundColor = "#" + String(fill);
+        // imageItem.style.backgroundColor = "rgb(166, 38, 63)";
+        // imageItem.src = "./images/default.svg";
+    }
     imageItem.className = 'Avatar';
     var mBody = document.createElement('div');
     mBody.className = "MessageBody";
@@ -64,12 +92,12 @@ function parseJSON(messages){
         when = messages[keys[i]]["time"];
         who  =  messages[keys[i]]["from"];
         room = messages[keys[i]]["room"];
-        console.log("Room: " + room + " Selected: " + selected);
+        // console.log("Room: " + room + " Selected: " + selected);
         if(selected.length == 0){
             console.log("Not room");
             createChatMessage(content, null, who, when);  
         }else if(selected == room){
-            console.log("in the filter");
+            // console.log("in the filter");
             createChatMessage(content, null, who, when);  
         }else{
             console.log("Here in else");
@@ -96,12 +124,17 @@ function updateWindow(parsed){
     var roomParent = document.getElementsByClassName("ChannelList")[0]; 
     let rooms = parsed["rooms"];
     rooms.forEach(element => {
-        if(checkRooms(element)){
-            var clone = roomElement.cloneNode(true);
-            clone.style.display = "block";
-            clone.querySelector(".ChannelText").textContent = element; 
-            // clone.textContent = element; 
-            roomParent.append(clone);
+        try{
+            if(checkRooms(element)){
+                var clone = roomElement.cloneNode(true);
+                clone.style.display = "block";
+                clone.querySelector(".ChannelText").textContent = element; 
+                // clone.textContent = element; 
+                roomParent.append(clone);
+            }
+
+        }catch(error){
+            console.log("Clone Error");
         }
     });
 
@@ -111,7 +144,7 @@ function updateWindow(parsed){
     let keys = Object.keys(users); 
 
     var listElements = document.getElementsByClassName("Users");
-    console.log("List elements: ", listElements); 
+    // console.log("List elements: ", listElements); 
     for(var i = 0; i < listElements.length; i++){
         listElements[i].remove();
     }
