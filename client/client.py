@@ -38,16 +38,18 @@ class Communication:
         self.symmetric_key = None  # symmetric key (sent by the server and used for the rest of the session)
         self.update_packet = False  # If it is an update packet or not
         self.sock = None  # Socket connection
+        
 
     # Message content, type is the type of message (normal is command or chat, file is a file object)
-    def send(self, content, type="normal", size=1024):
+    def send(self, content, type="normal", size=1024, file_name = None):
         message = {
             "n": self.messageNumber,
             "time": (datetime.now()).strftime("%Y-%m-%d %H:%M:%S"),
             "content": content,
             "token": "NEED TO IMPLEMENT!",
             "type": type,
-            "size": size
+            "size": size,
+            "name:": file_name
         }
 
         self.messageNumber += 1
@@ -182,14 +184,15 @@ if __name__ == "__main__":
 
                     break
 
-                case "image":
+                case "file":
                     location = parsed_command[1]
                     location = location.strip('\"')  # Remove the quotes
-                    print(f"Image Location: {location}")
+                    print(f"File Location: {location}")
                     # os.system(location) # Opens the image on your computer in a new window
                     file = open(location, 'rb')
                     sod = os.path.getsize(location)
-                    d = chat.send(None, type="file", size=sod)
+                    filename = os.path.basename(location)
+                    d = chat.send(None, type="file", size=sod, file_name = filename)
                     # TO print the file to double check contents
                     # byte = file.read(1)
                     # entire_file = b""

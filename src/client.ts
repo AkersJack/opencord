@@ -30,9 +30,9 @@ function sendMessageToRenderer(message: object){
 // File paths 
 const base_path = path.join(dirpath,  "/oc/");
 const theme_path = path.join(base_path, "/themes/");
-const profile_path = path.join(base_path, "/profile/");
-const message_path = path.join(base_path, "profile/", "messages.json");
-const account_path = path.join(base_path, "profile/", "account.json");
+// const profile_path = path.join(base_path, "/profile/");
+// const message_path = path.join(base_path, "profile/", "messages.json");
+// const account_path = path.join(base_path, "profile/", "account.json");
 
 // console.log("base_path: " + base_path);
 // console.log("theme_path: " + theme_path);
@@ -53,6 +53,10 @@ class Communication{
     symmetric_key: string;
     update_packet: boolean;
     sock: unknown;
+    message: unknown;
+    message_path: string; 
+    account_path: string;
+    profile_path: string; 
 
     constructor(){
         this.session_id = null // ID of the chat session 
@@ -87,11 +91,12 @@ class Communication{
 }
 
 
-const message = JSON.stringify({
-  "service":0, 
-  "client_version":"0.0.0.1", 
-  "profile":"Test", 
-});
+
+// const message = JSON.stringify({
+//   "service":0, 
+//   "client_version":"0.0.0.1", 
+//   "profile":"Test", 
+// });
 
 const chat = new Communication();
 
@@ -103,8 +108,8 @@ ipcMain.on('message-from-renderer', (event, arg)=>{
   const argkeys = Object.keys(arg); 
   // console.log("Argkeys: ", argkeys);
   if(arg.hasOwnProperty('update')){
-    let updateMessage = tools.readJSON(message_path); 
-    console.log('Update message: ', updateMessage); 
+    let updateMessage = tools.readJSON(chat.message_path); 
+    // console.log('Update message: ', updateMessage); 
     sendMessageToRenderer({"update":updateMessage});
   }
 
@@ -120,14 +125,15 @@ ipcMain.on('message-from-renderer', (event, arg)=>{
 function startClient() {
   const client = net.connect({ port: 9090, host: '127.0.0.1' }, () => {
     console.log('Connected to server');
+    // console.log("Message: ", chat.message);
 
     // Send data to the server
-    client.write(message);
+    client.write(JSON.stringify(chat.message));
   });
 
   
-  let message_data = tools.readJSON(message_path);
-  let account_data = tools.readJSON(account_path);
+  let message_data = tools.readJSON(chat.message_path);
+  let account_data = tools.readJSON(chat.account_path);
   console.log(account_data);
   // console.log("MessageData: ", message_data);
 
@@ -155,9 +161,12 @@ function startClient() {
     //   console.log("No matches found");
     // }
 
+
+
     if(matches != null){
       try{
           parsed = JSON.parse(matches[0]);
+          console.log("Parsed: ", parsed);
         if(parsed == null || parsed.length == 0){
           throw new Error("No valid data found"); 
         }
@@ -187,14 +196,20 @@ function startClient() {
               console.log("Parsed i: ", item);
               let k = (Object.keys(new_messages).length); 
               new_messages[k] = parsed[i];
-              message_data[item] = parsed[i]; 
-            
+              message_data[item] = parsed[i];  
             }
             // createChatMessage(parsed[i]["content"], null, parsed[i]["m_from"], parsed[i]["m_time"]); 
           }
 
+        }else if (parsed.hasOwnProperty("type")){
+          if(parsed["type"] == 3){
+            console.log("Update the items");
+            console.log("Rooms: ", parsed["rooms"]);
+            sendMessageToRenderer({"update-server": parsed});
+          }
+
         }else{
-          console.log("Something else (probably update packet) \n"); 
+          console.log("Something else. \n"); 
         }
 
       }catch(error){
@@ -211,7 +226,9 @@ function startClient() {
 
     // sendMessageToRenderer({"update": message_data}); 
     sendMessageToRenderer({"update": new_messages}); 
-    tools.writeJSON(message_path, message_data);
+
+
+    tools.writeJSON(chat.message_path, message_data);
     // console.log("Send message to renderer"); 
     // checkProcessType();
 

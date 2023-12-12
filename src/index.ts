@@ -51,8 +51,8 @@ const createWindow = (): void => {
   mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
-    console.log("Username: ", username);
-    console.log("Password: ", password);
+    // console.log("Username: ", username);
+    // console.log("Password: ", password);
     // if(username != null && password != null) {
       // stuff.encryptFolder(username, password);
     // }else{
@@ -75,7 +75,6 @@ const createLoginWindow = (): void => {
 
   // loginWindow.loadFile(path.join(__dirname, '/login/index.html'))
 
-  loginWindow.loadURL('file://C:/Users/jacka/Desktop/UMBC/cmsc447/opencord/opencord/src/main/index.html');
 
 
   // Open the DevTools.
@@ -96,19 +95,17 @@ app.on('ready', () =>{
 
 app.on('ready', ()=>{
 // Listen for IPC messages from the renderer process
-  startClient();
-  ipcMain.on('send-to-client', (event, message) => {
-    // Forward the message to the TCP client
-    // For simplicity, assuming there's only one client
-    // You may need to modify this for multiple clients
-    console.log("Message: ", message);
-    chat.sock.write(chat.sendmsg(message));
-  });
+    ipcMain.on('send-to-client', (event, message) => {
+      // Forward the message to the TCP client
+      // For simplicity, assuming there's only one client
+      // You may need to modify this for multiple clients
+      console.log("Message: ", message);
+      chat.sock.write(chat.sendmsg(message));
+    });
 });
 
 
 ipcMain.on('to-register', ()=>{
-  // secondWindow.loadURL('file://C:/Users/jacka/Desktop/UMBC/cmsc447/opencord/opencord/src/login/index.html');
   console.log("Swapping windows");
   mainWindow.loadFile(path.join(dirpath, '/src/register/register.html'));
 });
@@ -156,6 +153,15 @@ ipcMain.on('login', (event, formData)=>{
       webContents.send('from-login', "password");
 
     }else{
+      chat.profile_path = fpath; 
+      chat.message_path = path.join(fpath, "messages.json");
+      chat.account_path = path.join(fpath, "accounts.json");
+      chat.message = {
+        "service": 0, 
+        "clisnt_version":"0.0.0.1", 
+        "profile": username, 
+      }
+      startClient();
       mainWindow.loadFile(path.join(dirpath, './src/main/index.html'));
     }
   }

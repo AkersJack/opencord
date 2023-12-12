@@ -75,6 +75,7 @@ class Server:
         self.messages = None
         self.connections = []
         self.active_connections = []
+        self.active_users = []
         self.server_version = "0.0.0.1"
         self.server_hash = None  # Need to implement unique server hashes (easy way for server identification)
         self.verification_hash = None  # Need to implement unique verification hashes for the server
@@ -127,6 +128,7 @@ opencord_server = Server()
 
 
 def update(timeout=1):
+    while_counter = 0
     time.sleep(timeout)
     # message = bytes("Testing update", 'utf-8')
     while True:
@@ -183,10 +185,15 @@ def update(timeout=1):
                                 # print(f"message_id: {m[0]}")
 
                                 # print(f"Message: {m[2]}")
+                                # print(f"Message: {m}")
+
+                                room_name_cursor = opencord_server.database.sanitized_query("SELECT name FROM room WHERE id =?", [m[4]])
+                                room_name = room_name_cursor.fetchone()[0]
+
                                 built_message = opencord_server.build_message(content=m[2], m_time=m[1], m_from=name,
-                                                                              message_id=m[0])
+                                                                              message_id=m[0], message_room=room_name)
                                 message_bundle[i] = built_message
-                                print(f"Bundle: {message_bundle}")
+                                # print(f"Bundle: {message_bundle}")
                                 master_string = f"{name}: {m[2]}\n" + master_string
                                 # print(master_string)
                             except Exception as e:
@@ -200,30 +207,38 @@ def update(timeout=1):
                     elif client.last_message < messages[0][0]:
                         message_bundle = {}
                         print(f"Elif here")
-                        for x in range(0, messages[0][0] - client.last_message):
-                            # print(f"index: {x}")
-                            message_text = messages[x][2]
-                            # print(f"Message id: {message_id}")
-                            try:
-                                name = opencord_server.database.sanitized_query("SELECT name FROM user WHERE id =?",
-                                                                                [messages[x][5]])
-                                # name = opencord_server.database.query
-                                # (f"SELECT name FROM user WHERE id = {messages[x][5]}")
-                                name = name.fetchone()[0]
-                                master_string = f"{name}: {message_text}\n" + master_string
+                        try:
+                            for x in range(0, messages[0][0] - client.last_message):
+                                # print(f"index: {x}")
+                                message_text = messages[x][2]
+                                # print(f"Message id: {message_id}")
+                                try:
+                                    name = opencord_server.database.sanitized_query("SELECT name FROM user WHERE id =?",
+                                                                                    [messages[x][5]])
+                                    # name = opencord_server.database.query
+                                    # (f"SELECT name FROM user WHERE id = {messages[x][5]}")
+                                    name = name.fetchone()[0]
+                                    master_string = f"{name}: {message_text}\n" + master_string
 
-                                built_message = opencord_server.build_message(content=messages[x][2],
-                                                                              m_time=messages[x][1], m_from=name,
-                                                                              message_id=messages[x][0])
-                                message_bundle[x] = built_message
-                                client.last_message = messages[0][0]
-                            except Exception as e:
-                                print(f"Update Error: {e}")
-                                print(f"Last meassage: {client.last_message}\n Room: {room}")
+                                    room_name_cursor = opencord_server.database.sanitized_query("SELECT name FROM room WHERE id =?", [messages[x][4]])
+                                    room_name = room_name_cursor.fetchone()[0]
+
+                                    built_message = opencord_server.build_message(content=messages[x][2],
+                                                                                m_time=messages[x][1], m_from=name,
+                                                                                message_id=messages[x][0], message_room=room_name)
+                                    message_bundle[x] = built_message
+                                    client.last_message = messages[0][0]
+                                except Exception as e:
+                                    print(f"Update Error: {e}")
+                                    print(f"Last meassage: {client.last_message}\n Room: {room}")
+
+                            message = json.dumps(message_bundle).encode('utf-8')
+                            connection.sendall(message)
+
+                        except Exception as elifError: 
+                            print(f"Elif Error: {elifError}")
 
                         # message = bytes(master_string, 'utf-8')
-                        message = json.dumps(message_bundle).encode('utf-8')
-                        connection.sendall(message)
 
                 if conversation is not None:
                     messages = opencord_server.database.sanitized_query(
@@ -307,38 +322,53 @@ def update(timeout=1):
                         connection.sendall(message)
 
 
-        # Update the channel list
-        # Update the Currently connected users list 
-        # Update the conversations (the number of conversations and the users)
+                    # Update the channel list
+                    # Update the Currently connected users list 
+                    # Update the conversations (the number of conversations and the users)
 
-        result = opencord_server.database.query("SELECT name FROM room")
-        result = result.fetchall()
-        print(f"Result: {result}") 
+                if (while_counter ==  0 or while_counter % 5 == 0):
+                    rooms_list = []
+                    result = opencord_server.database.query("SELECT name FROM room")
+                    result = result.fetchall()
+                    try:
+                        # print(f"Result: {result}") 
+                        for r in result:
+                            rooms_list.append(r[0])
+                    except Exception as e:
+                        pass
+                        
 
-        headers = ["Users"]
-        # get all users with a status of 1 (online)
-        current_connected_users = opencord_server.database.sanitized_query(
-            "SELECT name FROM user WHERE status =?", [1])
+                    # connected_users = []
+                    all_users = []
+                    user_d = {}
 
-        current_connected_users = current_connected_users.fetchall()
-        for i, user in enumerate(current_connected_users):
-            if user[0] == client.phash:
-                current_connected_users[i] = user
+                    # print(f"Connections: {opencord_server.connections}")
+                    # print(f"Active Connections: {opencord_server.active_connections}")
+                    for person in opencord_server.active_connections: 
 
-        print(f"Current connected users: {current_connected_users}")
+                        u_name = list(person.keys())[0].phash
+                        u_id = list(person.keys())[0].id
+                        user_d[u_id] = u_name
 
-        update_packet = {
-                    # Run get users command 
-                    # Run get channels/rooms command 
-                    # Update the conversations/pms and the number of users in the PM 
-                
-                
-                }
+                    for person in opencord_server.connections: 
+                        all_users.append(person.phash)
+                        # print(f"Person3: {person.phash}")
+                    
+                    update_packet = {
+                        "type":3, 
+                        "connected": user_d, 
+                        "rooms": rooms_list, 
+                    }
 
+                    msg = json.dumps(update_packet).encode('utf-8')
+                    # print(f"While Counter: {while_counter}")
+                    
 
-
+                    connection.sendall(msg)
         
-
+        
+        
+        while_counter += 1
         time.sleep(timeout)
 
 
@@ -483,6 +513,7 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
 
         object_identifier = {client: self.request}
         opencord_server.active_connections.append(object_identifier)
+        # opencord_server.active_users.append()
         # self.data = self.request.recv(1024).strip()
         cur_thread = threading.current_thread()
         print(f"Thread: {cur_thread}")
@@ -512,10 +543,12 @@ class ThreadedTCPHandler(socketserver.BaseRequestHandler):
                 # message = message.decode('utf-8') 
                 m = client.read_message(message)
                 if m['type'] == 'file':
+                    name = m['name']
                     size = m['size']
                     print(f"Prep to receive: {size}")
                     print(0)
-                    with open("test.jpg", "wb") as f:
+                    # with open("test.jpg", "wb") as f:
+                    with open(name, "wb") as f:
                         # f.write(file)
                         while size > 0:
                             file = self.request.recv(1024)
